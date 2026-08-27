@@ -1,0 +1,39 @@
+# Unreal Engine generated files
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# Local Codex settings
+.codex/
+
+# IDE and local user files
+.vs/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.VC.db
+*.VC.opendb
+*.sln
+*.slnx
+
+# Build output
+Build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude agent: third-party CC0 texture downloads (~79MB).
+# Not committed because they are re-downloadable and the game ships the imported .uasset
+# versions in Content/. Exact asset IDs, source URL and licence are recorded in
+# Docs/AgentComparison/Claude/Step04_ArenaLevel.md, and CLS_Step04_Assets.py re-imports them.
+# The authored .blend and the exported FBX ARE committed.
+ExternalAssets/LastStand/Claude/Textures/
+
+# KoreanOldTown generated intermediates
+*.blend1
+ExternalAssets/Models/KoreanOldTown/KoreanOldTown_CombinedSource.blend
+Content/KoreanOldTown/Level/KOT_SaveProbe.umap
+Content/KoreanOldTown/Level/KoreanOldTown_BlenderGenerated.umap
