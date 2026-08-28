@@ -17,6 +17,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 
 private:
 	UFUNCTION(Exec)
@@ -25,13 +26,33 @@ private:
 	UFUNCTION(Exec)
 	void CodexDebugSetMouse(int32 ScreenX, int32 ScreenY);
 
+	UFUNCTION(Exec)
+	void CodexDebugEnemyScenario(FString Scenario);
+
+	UFUNCTION(Exec)
+	void CodexDebugAttackEnemy(FString NameContains);
+
+	UFUNCTION(Exec)
+	void CodexDebugCombatSnapshot();
+
 	void PressDebugKey(const FKey& Key);
 	void ReleaseDebugKeys();
 	void PressDebugDash();
 	void ReleaseDebugDash();
+	void PressDebugPrimaryAttack();
+	void ReleaseDebugPrimaryAttack();
+	void DebugSoloGrunt();
+	void DebugSoloRunner();
+	void DebugMultiEnemy();
+	void DebugAttackNearestEnemy();
+	void DebugSnapshot();
+	void DebugBoostPlayerHealth();
+	void DebugSetLitView();
 
 	TArray<FKey> DebugHeldKeys;
 	FTimerHandle DebugReleaseTimer;
 	FTimerHandle DebugDashPressTimer;
 	FTimerHandle DebugDashReleaseTimer;
+	FTimerHandle DebugAttackPressTimer;
+	FTimerHandle DebugAttackReleaseTimer;
 };

@@ -7,6 +7,7 @@
 #include "AgentGameTest/Codex/GAS/CodexLSAbilitySystemComponent.h"
 #include "AgentGameTest/Codex/GAS/CodexLSGameplayAbilities.h"
 #include "AgentGameTest/Codex/GAS/CodexLSGameplayEffects.h"
+#include "AgentGameTest/Codex/GAS/CodexLSAttributeSet.h"
 #include "AgentGameTest/Codex/Player/CodexLSPlayerState.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
@@ -146,6 +147,13 @@ void ACodexLSPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
+		if (HealthChangedDelegateHandle.IsValid())
+		{
+			ASC->GetGameplayAttributeValueChangeDelegate(UCodexLSAttributeSet::GetHealthAttribute())
+				.Remove(HealthChangedDelegateHandle);
+			HealthChangedDelegateHandle.Reset();
+		}
+
 		ASC->CancelAllAbilities();
 		if (ASC->GetAvatarActor() == this)
 		{
@@ -213,11 +221,40 @@ void ACodexLSPlayerCharacter::InitializeAbilitySystem()
 	}
 
 	CodexPlayerState->InitializeAbilitySystem(this);
+	if (!HealthChangedDelegateHandle.IsValid())
+	{
+		HealthChangedDelegateHandle =
+			CodexPlayerState->GetCodexAbilitySystemComponent()
+				->GetGameplayAttributeValueChangeDelegate(UCodexLSAttributeSet::GetHealthAttribute())
+				.AddUObject(this, &ThisClass::HandleHealthChanged);
+	}
+
 	if (HasAuthority())
 	{
 		CodexPlayerState->GrantAbilities(DefaultAbilities);
 		CodexPlayerState->ApplyDefaultAttributes(DefaultAttributesEffect);
 	}
+}
+
+void ACodexLSPlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
+{
+	if (bDead || ChangeData.NewValue > 0.0f || ChangeData.OldValue <= 0.0f)
+	{
+		return;
+	}
+
+	bDead = true;
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+	{
+		ASC->CancelAllAbilities();
+		ASC->AddLooseGameplayTag(CodexLSGameplayTags::State_Player_Dead);
+	}
+
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("Player Health Reached Zero | Player=%s DeadTag=present EnemyAttacksWillStop=true"),
+		*GetName());
 }
 
 void ACodexLSPlayerCharacter::LoadInputAssets()

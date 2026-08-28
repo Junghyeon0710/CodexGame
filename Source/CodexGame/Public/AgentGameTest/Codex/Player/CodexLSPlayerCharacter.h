@@ -4,6 +4,7 @@
 
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
+#include "GameplayEffectTypes.h"
 #include "InputActionValue.h"
 #include "CodexLSPlayerCharacter.generated.h"
 
@@ -37,6 +38,7 @@ public:
 	bool TracePrimaryAttack(float Range, FHitResult& OutHitResult) const;
 	FVector PerformDash(float DashSpeed);
 	void StopDashMovement();
+	bool IsDead() const { return bDead; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,6 +48,7 @@ private:
 	void LoadInputAssets();
 	void ApplyInputMappingContext();
 	void UpdateMouseAim(float DeltaSeconds);
+	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
 
 	void HandleMove(const FInputActionValue& Value);
 	void HandleMoveCompleted(const FInputActionValue& Value);
@@ -88,4 +91,6 @@ private:
 	FVector AimWorldPosition = FVector::ZeroVector;
 	FVector LastMovementWorldDirection = FVector::ZeroVector;
 	FVector2D LastLoggedMoveInput = FVector2D::ZeroVector;
+	FDelegateHandle HealthChangedDelegateHandle;
+	bool bDead = false;
 };

@@ -61,3 +61,41 @@ UCodexLSGE_DashCooldown::UCodexLSGE_DashCooldown()
 	TagChanges.AddTag(CodexLSGameplayTags::Cooldown_Player_Dash);
 	TargetTagsComponent->SetAndApplyTargetTagChanges(TagChanges);
 }
+
+UCodexLSGE_EnemyDefaultAttributes::UCodexLSGE_EnemyDefaultAttributes()
+{
+	DurationPolicy = EGameplayEffectDurationType::Instant;
+
+	FSetByCallerFloat MaxHealthMagnitude;
+	MaxHealthMagnitude.DataTag = CodexLSGameplayTags::Data_MaxHealth;
+
+	FGameplayModifierInfo& MaxHealthModifier = Modifiers.AddDefaulted_GetRef();
+	MaxHealthModifier.Attribute = UCodexLSAttributeSet::GetMaxHealthAttribute();
+	MaxHealthModifier.ModifierOp = EGameplayModOp::Override;
+	MaxHealthModifier.ModifierMagnitude = FGameplayEffectModifierMagnitude(MaxHealthMagnitude);
+
+	FSetByCallerFloat HealthMagnitude;
+	HealthMagnitude.DataTag = CodexLSGameplayTags::Data_Health;
+
+	FGameplayModifierInfo& HealthModifier = Modifiers.AddDefaulted_GetRef();
+	HealthModifier.Attribute = UCodexLSAttributeSet::GetHealthAttribute();
+	HealthModifier.ModifierOp = EGameplayModOp::Override;
+	HealthModifier.ModifierMagnitude = FGameplayEffectModifierMagnitude(HealthMagnitude);
+}
+
+UCodexLSGE_EnemyMeleeCooldown::UCodexLSGE_EnemyMeleeCooldown()
+{
+	DurationPolicy = EGameplayEffectDurationType::HasDuration;
+
+	FSetByCallerFloat CooldownMagnitude;
+	CooldownMagnitude.DataTag = CodexLSGameplayTags::Data_Cooldown;
+	DurationMagnitude = FGameplayEffectModifierMagnitude(CooldownMagnitude);
+
+	UTargetTagsGameplayEffectComponent* TargetTagsComponent =
+		CreateDefaultSubobject<UTargetTagsGameplayEffectComponent>(TEXT("EnemyMeleeCooldownTags"));
+	GEComponents.Add(TargetTagsComponent);
+
+	FInheritedTagContainer TagChanges;
+	TagChanges.AddTag(CodexLSGameplayTags::Cooldown_Enemy_MeleeAttack);
+	TargetTagsComponent->SetAndApplyTargetTagChanges(TagChanges);
+}

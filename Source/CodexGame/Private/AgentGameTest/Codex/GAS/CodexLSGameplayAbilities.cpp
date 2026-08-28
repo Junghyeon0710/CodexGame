@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AgentGameTest/Codex/CodexLSGameplayTags.h"
 #include "AgentGameTest/Codex/CodexLSLog.h"
+#include "AgentGameTest/Codex/Enemy/CodexLSEnemyCharacter.h"
 #include "AgentGameTest/Codex/GAS/CodexLSGameplayEffects.h"
 #include "AgentGameTest/Codex/Player/CodexLSPlayerCharacter.h"
 #include "Engine/World.h"
@@ -25,6 +26,7 @@ UCodexLSGA_PrimaryAttack::UCodexLSGA_PrimaryAttack()
 	FGameplayTagContainer Tags;
 	Tags.AddTag(CodexLSGameplayTags::Ability_Player_PrimaryAttack);
 	SetAssetTags(Tags);
+	ActivationBlockedTags.AddTag(CodexLSGameplayTags::State_Player_Dead);
 }
 
 void UCodexLSGA_PrimaryAttack::ActivateAbility(
@@ -98,6 +100,7 @@ UCodexLSGA_Dash::UCodexLSGA_Dash()
 	FGameplayTagContainer Tags;
 	Tags.AddTag(CodexLSGameplayTags::Ability_Player_Dash);
 	SetAssetTags(Tags);
+	ActivationBlockedTags.AddTag(CodexLSGameplayTags::State_Player_Dead);
 }
 
 void UCodexLSGA_Dash::ActivateAbility(
@@ -171,5 +174,110 @@ void UCodexLSGA_Dash::EndAbility(
 
 void UCodexLSGA_Dash::FinishDash()
 {
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+UCodexLSGA_EnemyMeleeAttack::UCodexLSGA_EnemyMeleeAttack()
+{
+	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerOnly;
+	CooldownGameplayEffectClass = UCodexLSGE_EnemyMeleeCooldown::StaticClass();
+	ActivationOwnedTags.AddTag(CodexLSGameplayTags::State_Enemy_Attacking);
+	ActivationBlockedTags.AddTag(CodexLSGameplayTags::State_Enemy_Dead);
+
+	FGameplayTagContainer Tags;
+	Tags.AddTag(CodexLSGameplayTags::Ability_Enemy_MeleeAttack);
+	SetAssetTags(Tags);
+}
+
+void UCodexLSGA_EnemyMeleeAttack::ActivateAbility(
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	ACodexLSEnemyCharacter* Enemy =
+		ActorInfo ? Cast<ACodexLSEnemyCharacter>(ActorInfo->AvatarActor.Get()) : nullptr;
+	if (!Enemy || Enemy->IsDead() || !Enemy->GetCombatTarget() ||
+		!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("Enemy MeleeAttack Activated | Enemy=%s Type=%s Damage=%.0f Cooldown=%.1f Target=%s"),
+		*Enemy->GetName(), *Enemy->GetEnemyArchetypeName(), Enemy->GetAttackDamage(),
+		Enemy->GetAttackCooldown(), *GetNameSafe(Enemy->GetCombatTarget()));
+
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().SetTimer(
+			AttackTimer, this, &ThisClass::ResolveMeleeAttack, AttackWindup, false);
+	}
+	else
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+	}
+}
+
+void UCodexLSGA_EnemyMeleeAttack::ApplyCooldown(
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo) const
+{
+	const ACodexLSEnemyCharacter* Enemy =
+		ActorInfo ? Cast<ACodexLSEnemyCharacter>(ActorInfo->AvatarActor.Get()) : nullptr;
+	if (!Enemy || !CooldownGameplayEffectClass)
+	{
+		return;
+	}
+
+	FGameplayEffectSpecHandle CooldownSpec = MakeOutgoingGameplayEffectSpec(
+		Handle, ActorInfo, ActivationInfo, CooldownGameplayEffectClass,
+		GetAbilityLevel(Handle, ActorInfo));
+	if (CooldownSpec.IsValid())
+	{
+		CooldownSpec.Data->SetSetByCallerMagnitude(
+			CodexLSGameplayTags::Data_Cooldown, Enemy->GetAttackCooldown());
+		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, CooldownSpec);
+	}
+}
+
+void UCodexLSGA_EnemyMeleeAttack::EndAbility(
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility,
+	bool bWasCancelled)
+{
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(AttackTimer);
+	}
+
+	const TWeakObjectPtr<UAbilitySystemComponent> ASC =
+		ActorInfo ? ActorInfo->AbilitySystemComponent.Get() : nullptr;
+	const TWeakObjectPtr<AActor> Avatar = ActorInfo ? ActorInfo->AvatarActor.Get() : nullptr;
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("Enemy MeleeAttack Ended | Enemy=%s Cancelled=%s AttackingTag=%s"),
+		*GetNameSafe(Avatar.Get()), bWasCancelled ? TEXT("true") : TEXT("false"),
+		ASC.IsValid() && ASC->HasMatchingGameplayTag(CodexLSGameplayTags::State_Enemy_Attacking)
+			? TEXT("present") : TEXT("removed"));
+}
+
+void UCodexLSGA_EnemyMeleeAttack::ResolveMeleeAttack()
+{
+	ACodexLSEnemyCharacter* Enemy =
+		CurrentActorInfo ? Cast<ACodexLSEnemyCharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr;
+	if (!Enemy || Enemy->IsDead())
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	Enemy->PerformMeleeAttack();
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }

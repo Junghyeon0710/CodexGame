@@ -40,3 +40,21 @@ class CODEXGAME_API UCodexLSGE_DashCooldown : public UGameplayEffect
 public:
 	UCodexLSGE_DashCooldown();
 };
+
+UCLASS()
+class CODEXGAME_API UCodexLSGE_EnemyDefaultAttributes : public UGameplayEffect
+{
+	GENERATED_BODY()
+
+public:
+	UCodexLSGE_EnemyDefaultAttributes();
+};
+
+UCLASS()
+class CODEXGAME_API UCodexLSGE_EnemyMeleeCooldown : public UGameplayEffect
+{
+	GENERATED_BODY()
+
+public:
+	UCodexLSGE_EnemyMeleeCooldown();
+};

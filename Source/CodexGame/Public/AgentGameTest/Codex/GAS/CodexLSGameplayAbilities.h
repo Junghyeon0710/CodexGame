@@ -79,3 +79,39 @@ private:
 
 	FTimerHandle DashEndTimer;
 };
+
+UCLASS()
+class CODEXGAME_API UCodexLSGA_EnemyMeleeAttack : public UCodexLSGameplayAbility
+{
+	GENERATED_BODY()
+
+public:
+	UCodexLSGA_EnemyMeleeAttack();
+
+	virtual void ActivateAbility(
+		const FGameplayAbilitySpecHandle Handle,
+		const FGameplayAbilityActorInfo* ActorInfo,
+		const FGameplayAbilityActivationInfo ActivationInfo,
+		const FGameplayEventData* TriggerEventData) override;
+
+	virtual void ApplyCooldown(
+		const FGameplayAbilitySpecHandle Handle,
+		const FGameplayAbilityActorInfo* ActorInfo,
+		const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+	virtual void EndAbility(
+		const FGameplayAbilitySpecHandle Handle,
+		const FGameplayAbilityActorInfo* ActorInfo,
+		const FGameplayAbilityActivationInfo ActivationInfo,
+		bool bReplicateEndAbility,
+		bool bWasCancelled) override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Enemy")
+	float AttackWindup = 0.16f;
+
+private:
+	void ResolveMeleeAttack();
+
+	FTimerHandle AttackTimer;
+};
