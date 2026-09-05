@@ -15,6 +15,7 @@ Saved/
 *.userprefs
 *.VC.db
 *.VC.opendb
+Scripts/AgentGameTest/Codex/__pycache__/
 *.sln
 *.slnx
 
@@ -31,6 +32,11 @@ Thumbs.db
 # Docs/AgentComparison/Claude/Step04_ArenaLevel.md, and CLS_Step04_Assets.py re-imports them.
 # The authored .blend and the exported FBX ARE committed.
 ExternalAssets/LastStand/Claude/Textures/
+
+# Codex agent: third-party CC0 texture downloads (~214MiB).
+# Keep the source/license manifest and imported Content/ .uasset versions, while
+# excluding the re-downloadable PNG source folders. Authored .blend and FBX stay tracked.
+ExternalAssets/LastStand/Codex/Textures/*/
 
 # KoreanOldTown generated intermediates
 *.blend1

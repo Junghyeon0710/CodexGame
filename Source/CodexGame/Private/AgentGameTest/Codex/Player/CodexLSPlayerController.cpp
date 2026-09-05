@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AgentGameTest/Codex/CodexLSLog.h"
+#include "AgentGameTest/Codex/CodexLSGameMode.h"
 #include "AgentGameTest/Codex/AI/CodexLSEnemyAIController.h"
 #include "AgentGameTest/Codex/Enemy/CodexLSEnemyCharacter.h"
 #include "AgentGameTest/Codex/GAS/CodexLSAttributeSet.h"
@@ -51,9 +52,12 @@ void ACodexLSPlayerController::SetupInputComponent()
 	InputComponent->BindKey(EKeys::Insert, IE_Pressed, this, &ThisClass::DebugSnapshot);
 	InputComponent->BindKey(EKeys::Home, IE_Pressed, this, &ThisClass::DebugBoostPlayerHealth);
 	InputComponent->BindKey(EKeys::End, IE_Pressed, this, &ThisClass::DebugSetLitView);
+	InputComponent->BindKey(EKeys::F8, IE_Pressed, this, &ThisClass::DebugDefeatAllWaveEnemies);
+	InputComponent->BindKey(EKeys::F7, IE_Pressed, this, &ThisClass::DebugForcePlayerDeath);
+	InputComponent->BindKey(EKeys::F6, IE_Pressed, this, &ThisClass::DebugRestartLevel);
 
 	UE_LOG(LogCodexLastStand, Log,
-		TEXT("STEP2 QA Keys Bound | F9=SoloGrunt F10=SoloRunner F11=Multi F12=Attack Insert=Snapshot Home=BoostHealth End=LitView"));
+		TEXT("STEP3 QA Keys Bound | F6=Restart F7=GameOver F8=DefeatWave F9=SoloGrunt F10=SoloRunner F11=Multi F12=Attack Insert=Snapshot Home=BoostHealth End=LitView"));
 }
 
 void ACodexLSPlayerController::CodexDebugInputChord(FString Chord, bool bDash, float HoldSeconds)
@@ -277,6 +281,131 @@ void ACodexLSPlayerController::CodexDebugCombatSnapshot()
 	UE_LOG(LogCodexLastStand, Log,
 		TEXT("CODEX_STEP2_SNAPSHOT | PlayerHealth=%.0f/%.0f Enemies=%d Living=%d"),
 		PlayerHealth, PlayerMaxHealth, TotalEnemies, LivingEnemies);
+
+	CodexDebugGameLoopSnapshot();
+}
+
+void ACodexLSPlayerController::CodexDebugGameLoopSnapshot()
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugGameLoopSnapshot();
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugDefeatEnemies(FString Filter, int32 Count)
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugDefeatActiveEnemies(Filter, Count);
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugKillPlayer()
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugForcePlayerDeath();
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugTerminalRace(FString Order)
+{
+	Order.ToUpperInline();
+	const bool bPlayerFirst = Order == TEXT("PLAYERFIRST") || Order == TEXT("PLAYER");
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugTerminalRace(bPlayerFirst);
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugForceSpawnFailures(int32 Count)
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugForceNextSpawnFailures(Count);
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugRestartGameLoop()
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->RestartCurrentLevel();
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugSetPlayerHealth(float Health)
+{
+	APawn* ControlledPawn = GetPawn();
+	UAbilitySystemComponent* ASC = ControlledPawn
+		? UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ControlledPawn)
+		: nullptr;
+	if (!ASC || ASC->HasMatchingGameplayTag(CodexLSGameplayTags::State_Player_Dead))
+	{
+		UE_LOG(LogCodexLastStand, Warning,
+			TEXT("CODEX_STEP3_QA_HEALTH_BOOST_SKIPPED Health=%.0f Reason=MissingASCOrDead"),
+			Health);
+		return;
+	}
+
+	const float SanitizedHealth = FMath::Max(1.0f, Health);
+	ASC->SetNumericAttributeBase(UCodexLSAttributeSet::GetMaxHealthAttribute(), SanitizedHealth);
+	ASC->SetNumericAttributeBase(UCodexLSAttributeSet::GetHealthAttribute(), SanitizedHealth);
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("CODEX_STEP3_QA_HEALTH_BOOST Health=%.0f"), SanitizedHealth);
+}
+
+void ACodexLSPlayerController::CodexDebugRestartWithHealth(float Health)
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugRestartWithHealth(Health);
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugRestartForSpawnGameOver(int32 SpawnCount)
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugRestartForSpawnGameOver(SpawnCount);
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugRestartForSpawnFailures(int32 Count)
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugRestartForSpawnFailures(Count);
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugWaveClearThenKillPlayer()
+{
+	if (ACodexLSGameMode* GameMode = GetWorld()
+		? GetWorld()->GetAuthGameMode<ACodexLSGameMode>()
+		: nullptr)
+	{
+		GameMode->DebugWaveClearThenKillPlayer();
+	}
 }
 
 void ACodexLSPlayerController::PressDebugKey(const FKey& Key)
@@ -341,25 +470,27 @@ void ACodexLSPlayerController::DebugSnapshot()
 
 void ACodexLSPlayerController::DebugBoostPlayerHealth()
 {
-	APawn* ControlledPawn = GetPawn();
-	UAbilitySystemComponent* ASC = ControlledPawn
-		? UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ControlledPawn)
-		: nullptr;
-	if (!ASC || ASC->HasMatchingGameplayTag(CodexLSGameplayTags::State_Player_Dead))
-	{
-		UE_LOG(LogCodexLastStand, Warning,
-			TEXT("STEP2 QA Health Boost skipped: player ASC missing or player already dead"));
-		return;
-	}
-
 	constexpr float DebugHealth = 1000.0f;
-	ASC->SetNumericAttributeBase(UCodexLSAttributeSet::GetMaxHealthAttribute(), DebugHealth);
-	ASC->SetNumericAttributeBase(UCodexLSAttributeSet::GetHealthAttribute(), DebugHealth);
-	UE_LOG(LogCodexLastStand, Log, TEXT("STEP2 QA Health Boost | Health=%.0f"), DebugHealth);
+	CodexDebugSetPlayerHealth(DebugHealth);
 }
 
 void ACodexLSPlayerController::DebugSetLitView()
 {
 	ConsoleCommand(TEXT("viewmode lit"), true);
 	UE_LOG(LogCodexLastStand, Log, TEXT("STEP2 QA ViewMode | Lit"));
+}
+
+void ACodexLSPlayerController::DebugDefeatAllWaveEnemies()
+{
+	CodexDebugDefeatEnemies(TEXT("All"), -1);
+}
+
+void ACodexLSPlayerController::DebugForcePlayerDeath()
+{
+	CodexDebugKillPlayer();
+}
+
+void ACodexLSPlayerController::DebugRestartLevel()
+{
+	CodexDebugRestartGameLoop();
 }

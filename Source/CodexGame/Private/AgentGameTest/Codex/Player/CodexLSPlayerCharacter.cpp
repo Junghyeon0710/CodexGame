@@ -23,6 +23,7 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "Math/RotationMatrix.h"
+#include "Materials/MaterialInterface.h"
 #include "UObject/ConstructorHelpers.h"
 
 namespace
@@ -93,6 +94,11 @@ ACodexLSPlayerCharacter::ACodexLSPlayerCharacter()
 void ACodexLSPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (VisualMaterial)
+	{
+		TestVisual->SetMaterial(0, VisualMaterial);
+	}
 
 	LoadInputAssets();
 	ApplyInputMappingContext();
@@ -212,6 +218,31 @@ void ACodexLSPlayerCharacter::StopDashMovement()
 	}
 }
 
+void ACodexLSPlayerCharacter::SetGameplayInputEnabled(bool bEnabled)
+{
+	bGameplayInputEnabled = bEnabled && !bDead;
+
+	if (!bGameplayInputEnabled)
+	{
+		if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+		{
+			ASC->CancelAllAbilities();
+		}
+
+		GetCharacterMovement()->StopMovementImmediately();
+		GetCharacterMovement()->DisableMovement();
+	}
+	else
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	}
+
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("CODEX_STEP3_PLAYER_INPUT Enabled=%s Dead=%s"),
+		bGameplayInputEnabled ? TEXT("true") : TEXT("false"),
+		bDead ? TEXT("true") : TEXT("false"));
+}
+
 void ACodexLSPlayerCharacter::InitializeAbilitySystem()
 {
 	ACodexLSPlayerState* CodexPlayerState = GetPlayerState<ACodexLSPlayerState>();
@@ -252,8 +283,10 @@ void ACodexLSPlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& 
 
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
+	bGameplayInputEnabled = false;
+	OnPlayerDeath.Broadcast(this);
 	UE_LOG(LogCodexLastStand, Log,
-		TEXT("Player Health Reached Zero | Player=%s DeadTag=present EnemyAttacksWillStop=true"),
+		TEXT("Player Health Reached Zero | Player=%s DeadTag=present DeathEvent=BroadcastOnce EnemyAttacksWillStop=true"),
 		*GetName());
 }
 
@@ -330,6 +363,11 @@ void ACodexLSPlayerCharacter::UpdateMouseAim(float DeltaSeconds)
 
 void ACodexLSPlayerCharacter::HandleMove(const FInputActionValue& Value)
 {
+	if (!bGameplayInputEnabled || bDead)
+	{
+		return;
+	}
+
 	FVector2D MoveInput = Value.Get<FVector2D>();
 	MoveInput = MoveInput.GetClampedToMaxSize(1.0f);
 
@@ -360,6 +398,11 @@ void ACodexLSPlayerCharacter::HandleMoveCompleted(const FInputActionValue& Value
 
 void ACodexLSPlayerCharacter::HandlePrimaryAttackPressed()
 {
+	if (!bGameplayInputEnabled || bDead)
+	{
+		return;
+	}
+
 	if (UCodexLSAbilitySystemComponent* ASC =
 		Cast<UCodexLSAbilitySystemComponent>(GetAbilitySystemComponent()))
 	{
@@ -378,6 +421,11 @@ void ACodexLSPlayerCharacter::HandlePrimaryAttackReleased()
 
 void ACodexLSPlayerCharacter::HandleDashPressed()
 {
+	if (!bGameplayInputEnabled || bDead)
+	{
+		return;
+	}
+
 	if (UCodexLSAbilitySystemComponent* ASC =
 		Cast<UCodexLSAbilitySystemComponent>(GetAbilitySystemComponent()))
 	{

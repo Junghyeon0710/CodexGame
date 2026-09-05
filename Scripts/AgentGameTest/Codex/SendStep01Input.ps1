@@ -4,7 +4,7 @@ param(
     [int]$EditorProcessId,
 
     [Parameter(Mandatory = $true, ParameterSetName = 'Chord')]
-    [ValidateSet('W', 'A', 'S', 'D', 'Space')]
+    [ValidateSet('W', 'A', 'S', 'D', 'Space', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'Insert', 'Home', 'End')]
     [string[]]$Keys,
 
     [Parameter(ParameterSetName = 'Chord')]
@@ -145,17 +145,15 @@ public static class CodexStep01NativeInput
     public static bool KeyDown(IntPtr window, byte virtualKey)
     {
         uint scanCode = MapVirtualKey(virtualKey, 0);
-        long eventData = 1L | ((long)scanCode << 16);
         keybd_event(virtualKey, (byte)scanCode, 0, UIntPtr.Zero);
-        return PostMessage(window, WindowKeyDown, (IntPtr)virtualKey, (IntPtr)eventData);
+        return true;
     }
 
     public static bool KeyRelease(IntPtr window, byte virtualKey)
     {
         uint scanCode = MapVirtualKey(virtualKey, 0);
-        long eventData = 1L | ((long)scanCode << 16) | (1L << 30) | (1L << 31);
         keybd_event(virtualKey, (byte)scanCode, KeyboardKeyUp, UIntPtr.Zero);
-        return PostMessage(window, WindowKeyUp, (IntPtr)virtualKey, (IntPtr)eventData);
+        return true;
     }
 
     public static bool MoveCursor(int x, int y)
@@ -212,6 +210,16 @@ $virtualKeys = @{
     S = [byte]0x53
     D = [byte]0x44
     Space = [byte]0x20
+    F6 = [byte]0x75
+    F7 = [byte]0x76
+    F8 = [byte]0x77
+    F9 = [byte]0x78
+    F10 = [byte]0x79
+    F11 = [byte]0x7A
+    F12 = [byte]0x7B
+    Insert = [byte]0x2D
+    Home = [byte]0x24
+    End = [byte]0x23
 }
 
 foreach ($keyName in $Keys) {

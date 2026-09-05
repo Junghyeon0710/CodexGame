@@ -13,6 +13,7 @@ enum class ECodexLSEnemyAIState : uint8
 	Idle,
 	Chase,
 	Attack,
+	Suspended,
 	Dead
 };
 
@@ -34,6 +35,7 @@ public:
 
 	AActor* GetTargetActor() const { return CachedTarget.Get(); }
 	void EnterDeadState();
+	void SuspendForGameEnd();
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;

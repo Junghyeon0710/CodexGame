@@ -35,6 +35,39 @@ private:
 	UFUNCTION(Exec)
 	void CodexDebugCombatSnapshot();
 
+	UFUNCTION(Exec)
+	void CodexDebugGameLoopSnapshot();
+
+	UFUNCTION(Exec)
+	void CodexDebugDefeatEnemies(FString Filter, int32 Count);
+
+	UFUNCTION(Exec)
+	void CodexDebugKillPlayer();
+
+	UFUNCTION(Exec)
+	void CodexDebugTerminalRace(FString Order);
+
+	UFUNCTION(Exec)
+	void CodexDebugForceSpawnFailures(int32 Count);
+
+	UFUNCTION(Exec)
+	void CodexDebugRestartGameLoop();
+
+	UFUNCTION(Exec)
+	void CodexDebugSetPlayerHealth(float Health);
+
+	UFUNCTION(Exec)
+	void CodexDebugRestartWithHealth(float Health);
+
+	UFUNCTION(Exec)
+	void CodexDebugRestartForSpawnGameOver(int32 SpawnCount);
+
+	UFUNCTION(Exec)
+	void CodexDebugRestartForSpawnFailures(int32 Count);
+
+	UFUNCTION(Exec)
+	void CodexDebugWaveClearThenKillPlayer();
+
 	void PressDebugKey(const FKey& Key);
 	void ReleaseDebugKeys();
 	void PressDebugDash();
@@ -48,6 +81,9 @@ private:
 	void DebugSnapshot();
 	void DebugBoostPlayerHealth();
 	void DebugSetLitView();
+	void DebugDefeatAllWaveEnemies();
+	void DebugForcePlayerDeath();
+	void DebugRestartLevel();
 
 	TArray<FKey> DebugHeldKeys;
 	FTimerHandle DebugReleaseTimer;

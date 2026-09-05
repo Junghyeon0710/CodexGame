@@ -1,0 +1,1172 @@
+{
+  "generator": "Codex_LastStand_Step04_BlenderKit_v1",
+  "generated_utc": "2026-09-02T12:52:36.654113+00:00",
+  "scene": "LS_Codex_Environment",
+  "collection": "LS_Codex_Environment",
+  "blender_version": "5.2.0 LTS",
+  "authoring_units": "metres",
+  "fbx_apply_unit_scale": true,
+  "fbx_apply_scale_options": "FBX_SCALE_UNITS",
+  "fbx_axis_forward": "-Y",
+  "fbx_axis_up": "Z",
+  "unreal_import_scale": 1.0,
+  "unreal_convert_scene_unit": true,
+  "uv_policy": "UV0 orthonormal face projection; one repeat per two metres",
+  "lightmap_uv": "not authored; generate UV1 on Unreal import if required",
+  "blend_saved": false,
+  "assets": [
+    {
+      "name": "SM_LS_Container",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_Container.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_Container.fbx",
+      "dimensions_m": [
+        6.062,
+        2.44,
+        2.59
+      ],
+      "dimensions_cm": [
+        606.200004,
+        244.000006,
+        258.999991
+      ],
+      "target_dimensions_m": [
+        6.06,
+        2.44,
+        2.59
+      ],
+      "bounds_min_m": [
+        -3.03,
+        -1.22,
+        0.0
+      ],
+      "bounds_max_m": [
+        3.032,
+        1.22,
+        2.59
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 2688,
+      "triangles": 4752,
+      "uv_count": 1,
+      "uv_loops": 10304,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "PaintedMetal",
+          "blender_material": "LS_Codex_PaintedMetal"
+        },
+        {
+          "index": 1,
+          "logical_name": "WornMetal",
+          "blender_material": "LS_Codex_WornMetal"
+        },
+        {
+          "index": 2,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_Container_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            1.295
+          ],
+          "parameters_m": [
+            6.06,
+            2.44,
+            2.59
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 193132,
+      "blender_preview_location_m": [
+        0.0,
+        0.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_ConcreteBarrier",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_ConcreteBarrier.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_ConcreteBarrier.fbx",
+      "dimensions_m": [
+        2.4,
+        0.55,
+        0.9
+      ],
+      "dimensions_cm": [
+        240.00001,
+        55.000001,
+        89.999998
+      ],
+      "target_dimensions_m": [
+        2.4,
+        0.55,
+        0.9
+      ],
+      "bounds_min_m": [
+        -1.2,
+        -0.275,
+        0.0
+      ],
+      "bounds_max_m": [
+        1.2,
+        0.275,
+        0.9
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 280,
+      "triangles": 516,
+      "uv_count": 1,
+      "uv_loops": 1112,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "Concrete",
+          "blender_material": "LS_Codex_Concrete"
+        },
+        {
+          "index": 1,
+          "logical_name": "Yellow",
+          "blender_material": "LS_Codex_Yellow"
+        },
+        {
+          "index": 2,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_ConcreteBarrier_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            0.45
+          ],
+          "parameters_m": [
+            2.4,
+            0.55,
+            0.9
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 40204,
+      "blender_preview_location_m": [
+        12.0,
+        0.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_PipeSkid",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_PipeSkid.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_PipeSkid.fbx",
+      "dimensions_m": [
+        6.0,
+        2.5,
+        1.595981
+      ],
+      "dimensions_cm": [
+        600.0,
+        250.0,
+        159.598076
+      ],
+      "target_dimensions_m": [
+        6,
+        2.5,
+        1.6
+      ],
+      "bounds_min_m": [
+        -3.0,
+        -1.25,
+        0.0
+      ],
+      "bounds_max_m": [
+        3.0,
+        1.25,
+        1.595981
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 3576,
+      "triangles": 3820,
+      "uv_count": 1,
+      "uv_loops": 7032,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "WornMetal",
+          "blender_material": "LS_Codex_WornMetal"
+        },
+        {
+          "index": 1,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        },
+        {
+          "index": 2,
+          "logical_name": "PaintedMetal",
+          "blender_material": "LS_Codex_PaintedMetal"
+        },
+        {
+          "index": 3,
+          "logical_name": "Yellow",
+          "blender_material": "LS_Codex_Yellow"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_PipeSkid_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            0.8
+          ],
+          "parameters_m": [
+            6,
+            2.5,
+            1.6
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 215548,
+      "blender_preview_location_m": [
+        24.0,
+        0.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_UtilityBox",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_UtilityBox.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_UtilityBox.fbx",
+      "dimensions_m": [
+        1.3,
+        0.6,
+        1.6
+      ],
+      "dimensions_cm": [
+        129.999995,
+        60.000002,
+        159.99999
+      ],
+      "target_dimensions_m": [
+        1.3,
+        0.6,
+        1.6
+      ],
+      "bounds_min_m": [
+        -0.65,
+        -0.3,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.65,
+        0.3,
+        1.6
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 528,
+      "triangles": 968,
+      "uv_count": 1,
+      "uv_loops": 2112,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "Concrete",
+          "blender_material": "LS_Codex_Concrete"
+        },
+        {
+          "index": 1,
+          "logical_name": "PaintedMetal",
+          "blender_material": "LS_Codex_PaintedMetal"
+        },
+        {
+          "index": 2,
+          "logical_name": "WornMetal",
+          "blender_material": "LS_Codex_WornMetal"
+        },
+        {
+          "index": 3,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        },
+        {
+          "index": 4,
+          "logical_name": "Yellow",
+          "blender_material": "LS_Codex_Yellow"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_UtilityBox_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            0.8
+          ],
+          "parameters_m": [
+            1.3,
+            0.6,
+            1.6
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 62060,
+      "blender_preview_location_m": [
+        36.0,
+        0.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_Barrel",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_Barrel.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_Barrel.fbx",
+      "dimensions_m": [
+        0.6,
+        0.6,
+        0.9
+      ],
+      "dimensions_cm": [
+        60.000002,
+        60.000002,
+        89.999998
+      ],
+      "target_dimensions_m": [
+        0.6,
+        0.6,
+        0.9
+      ],
+      "bounds_min_m": [
+        -0.3,
+        -0.3,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.3,
+        0.3,
+        0.9
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 960,
+      "triangles": 1616,
+      "uv_count": 1,
+      "uv_loops": 3136,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "PaintedMetal",
+          "blender_material": "LS_Codex_PaintedMetal"
+        },
+        {
+          "index": 1,
+          "logical_name": "WornMetal",
+          "blender_material": "LS_Codex_WornMetal"
+        },
+        {
+          "index": 2,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_Barrel_00",
+          "shape": "cylinder",
+          "centre_m": [
+            0,
+            0,
+            0.45
+          ],
+          "parameters_m": [
+            0.3,
+            0.9
+          ],
+          "vertices": 48,
+          "triangles": 44
+        }
+      ],
+      "fbx_bytes": 142188,
+      "blender_preview_location_m": [
+        0.0,
+        12.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_Pallet",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_Pallet.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_Pallet.fbx",
+      "dimensions_m": [
+        1.2,
+        1.0,
+        0.15
+      ],
+      "dimensions_cm": [
+        120.000005,
+        100.0,
+        15.000001
+      ],
+      "target_dimensions_m": [
+        1.2,
+        1,
+        0.15
+      ],
+      "bounds_min_m": [
+        -0.6,
+        -0.5,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.6,
+        0.5,
+        0.15
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 768,
+      "triangles": 1068,
+      "uv_count": 1,
+      "uv_loops": 2232,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "Wood",
+          "blender_material": "LS_Codex_Wood"
+        },
+        {
+          "index": 1,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_Pallet_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            0.075
+          ],
+          "parameters_m": [
+            1.2,
+            1.0,
+            0.15
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 59628,
+      "blender_preview_location_m": [
+        12.0,
+        12.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_FenceSection",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_FenceSection.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_FenceSection.fbx",
+      "dimensions_m": [
+        4.0,
+        0.12,
+        2.0
+      ],
+      "dimensions_cm": [
+        400.0,
+        12.0,
+        200.0
+      ],
+      "target_dimensions_m": [
+        4,
+        0.12,
+        2
+      ],
+      "bounds_min_m": [
+        -2.0,
+        -0.06,
+        0.0
+      ],
+      "bounds_max_m": [
+        2.0,
+        0.06,
+        2.0
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 1008,
+      "triangles": 936,
+      "uv_count": 1,
+      "uv_loops": 1904,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        },
+        {
+          "index": 1,
+          "logical_name": "WornMetal",
+          "blender_material": "LS_Codex_WornMetal"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_FenceSection_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            1
+          ],
+          "parameters_m": [
+            4,
+            0.12,
+            2
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 92812,
+      "blender_preview_location_m": [
+        24.0,
+        12.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_Warehouse",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_Warehouse.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_Warehouse.fbx",
+      "dimensions_m": [
+        6.0,
+        4.0,
+        4.0
+      ],
+      "dimensions_cm": [
+        600.0,
+        400.0,
+        400.0
+      ],
+      "target_dimensions_m": [
+        6,
+        4,
+        4
+      ],
+      "bounds_min_m": [
+        -3.0,
+        -2.0,
+        0.0
+      ],
+      "bounds_max_m": [
+        3.0,
+        2.0,
+        4.0
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 2538,
+      "triangles": 4652,
+      "uv_count": 1,
+      "uv_loops": 10152,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "Concrete",
+          "blender_material": "LS_Codex_Concrete"
+        },
+        {
+          "index": 1,
+          "logical_name": "PaintedMetal",
+          "blender_material": "LS_Codex_PaintedMetal"
+        },
+        {
+          "index": 2,
+          "logical_name": "WornMetal",
+          "blender_material": "LS_Codex_WornMetal"
+        },
+        {
+          "index": 3,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        },
+        {
+          "index": 4,
+          "logical_name": "Yellow",
+          "blender_material": "LS_Codex_Yellow"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_Warehouse_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            2
+          ],
+          "parameters_m": [
+            6,
+            4,
+            4
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 229196,
+      "blender_preview_location_m": [
+        36.0,
+        12.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_Crate",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_Crate.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_Crate.fbx",
+      "dimensions_m": [
+        0.85,
+        0.85,
+        0.85
+      ],
+      "dimensions_cm": [
+        85.000002,
+        85.000002,
+        85.000002
+      ],
+      "target_dimensions_m": [
+        0.85,
+        0.85,
+        0.85
+      ],
+      "bounds_min_m": [
+        -0.425,
+        -0.425,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.425,
+        0.425,
+        0.85
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 768,
+      "triangles": 1408,
+      "uv_count": 1,
+      "uv_loops": 3072,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "Wood",
+          "blender_material": "LS_Codex_Wood"
+        },
+        {
+          "index": 1,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_Crate_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            0.425
+          ],
+          "parameters_m": [
+            0.85,
+            0.85,
+            0.85
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 72652,
+      "blender_preview_location_m": [
+        0.0,
+        24.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_IndustrialLamp",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_IndustrialLamp.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_IndustrialLamp.fbx",
+      "dimensions_m": [
+        1.025,
+        0.34,
+        3.5
+      ],
+      "dimensions_cm": [
+        102.500001,
+        34.0,
+        350.0
+      ],
+      "target_dimensions_m": [
+        1.025,
+        0.34,
+        3.5
+      ],
+      "bounds_min_m": [
+        -0.15,
+        -0.17,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.875,
+        0.17,
+        3.5
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 352,
+      "triangles": 364,
+      "uv_count": 1,
+      "uv_loops": 672,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "WornMetal",
+          "blender_material": "LS_Codex_WornMetal"
+        },
+        {
+          "index": 1,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        },
+        {
+          "index": 2,
+          "logical_name": "PaintedMetal",
+          "blender_material": "LS_Codex_PaintedMetal"
+        },
+        {
+          "index": 3,
+          "logical_name": "Emissive",
+          "blender_material": "LS_Codex_Emissive"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_IndustrialLamp_00",
+          "shape": "cylinder",
+          "centre_m": [
+            0,
+            0,
+            1.635
+          ],
+          "parameters_m": [
+            0.15,
+            3.27
+          ],
+          "vertices": 48,
+          "triangles": 44
+        }
+      ],
+      "fbx_bytes": 41596,
+      "blender_preview_location_m": [
+        12.0,
+        24.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_GroundTile",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_GroundTile.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_GroundTile.fbx",
+      "dimensions_m": [
+        10.0,
+        10.0,
+        0.15
+      ],
+      "dimensions_cm": [
+        1000.0,
+        1000.0,
+        15.000001
+      ],
+      "target_dimensions_m": [
+        10,
+        10,
+        0.15
+      ],
+      "bounds_min_m": [
+        -5.0,
+        -5.0,
+        -0.15
+      ],
+      "bounds_max_m": [
+        5.0,
+        5.0,
+        0.0
+      ],
+      "pivot": "ground_top",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 8,
+      "triangles": 12,
+      "uv_count": 1,
+      "uv_loops": 24,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "Concrete",
+          "blender_material": "LS_Codex_Concrete"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_GroundTile_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            -0.075
+          ],
+          "parameters_m": [
+            10,
+            10,
+            0.15
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 18396,
+      "blender_preview_location_m": [
+        24.0,
+        24.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_Drain",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_Drain.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_Drain.fbx",
+      "dimensions_m": [
+        1.0,
+        0.4,
+        0.05
+      ],
+      "dimensions_cm": [
+        100.0,
+        40.000001,
+        5.0
+      ],
+      "target_dimensions_m": [
+        1,
+        0.4,
+        0.05
+      ],
+      "bounds_min_m": [
+        -0.5,
+        -0.2,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.5,
+        0.2,
+        0.05
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 648,
+      "triangles": 1188,
+      "uv_count": 1,
+      "uv_loops": 2592,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "DarkMetal",
+          "blender_material": "LS_Codex_DarkMetal"
+        },
+        {
+          "index": 1,
+          "logical_name": "WornMetal",
+          "blender_material": "LS_Codex_WornMetal"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_Drain_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            0.025
+          ],
+          "parameters_m": [
+            1,
+            0.4,
+            0.05
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 64972,
+      "blender_preview_location_m": [
+        36.0,
+        24.0,
+        0
+      ]
+    },
+    {
+      "name": "SM_LS_Curb",
+      "export_path": "D:\\Unreal Projects\\CodexGame\\ExternalAssets\\LastStand\\Codex\\Models\\SM_LS_Curb.fbx",
+      "relative_export_path": "ExternalAssets/LastStand/Codex/Models/SM_LS_Curb.fbx",
+      "dimensions_m": [
+        4.0,
+        0.25,
+        0.25
+      ],
+      "dimensions_cm": [
+        400.0,
+        25.0,
+        25.0
+      ],
+      "target_dimensions_m": [
+        4,
+        0.25,
+        0.25
+      ],
+      "bounds_min_m": [
+        -2.0,
+        -0.125,
+        0.0
+      ],
+      "bounds_max_m": [
+        2.0,
+        0.125,
+        0.25
+      ],
+      "pivot": "bottom_centre",
+      "export_location_m": [
+        0,
+        0,
+        0
+      ],
+      "applied_scale": [
+        1,
+        1,
+        1
+      ],
+      "vertices": 120,
+      "triangles": 220,
+      "uv_count": 1,
+      "uv_loops": 480,
+      "metres_per_uv_repeat": 2.0,
+      "material_slots": [
+        {
+          "index": 0,
+          "logical_name": "Concrete",
+          "blender_material": "LS_Codex_Concrete"
+        },
+        {
+          "index": 1,
+          "logical_name": "Yellow",
+          "blender_material": "LS_Codex_Yellow"
+        }
+      ],
+      "collision_count": 1,
+      "collisions": [
+        {
+          "name": "UCX_SM_LS_Curb_00",
+          "shape": "box",
+          "centre_m": [
+            0,
+            0,
+            0.125
+          ],
+          "parameters_m": [
+            4,
+            0.25,
+            0.25
+          ],
+          "vertices": 8,
+          "triangles": 12
+        }
+      ],
+      "fbx_bytes": 28044,
+      "blender_preview_location_m": [
+        0.0,
+        36.0,
+        0
+      ]
+    }
+  ],
+  "render_mesh_count": 13,
+  "collision_mesh_count": 13,
+  "blender_objects_created": 26,
+  "placeholder_materials": [
+    "LS_Codex_Concrete",
+    "LS_Codex_PaintedMetal",
+    "LS_Codex_WornMetal",
+    "LS_Codex_DarkMetal",
+    "LS_Codex_Wood",
+    "LS_Codex_Emissive",
+    "LS_Codex_Yellow",
+    "LS_Codex_Rubber"
+  ],
+  "total_render_vertices": 14242,
+  "total_render_triangles": 21520,
+  "preservation_policy": "Only exact named, generator-tagged Codex data replaced"
+}

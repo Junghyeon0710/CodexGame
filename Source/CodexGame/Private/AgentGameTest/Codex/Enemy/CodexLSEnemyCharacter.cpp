@@ -16,8 +16,10 @@
 #include "DrawDebugHelpers.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayAbilitySpec.h"
+#include "Materials/MaterialInterface.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -138,6 +140,24 @@ bool ACodexLSEnemyCharacter::TryActivateMeleeAbility()
 	return bActivated;
 }
 
+bool ACodexLSEnemyCharacter::HasUnobstructedMeleeTarget(const AActor* TargetActor) const
+{
+	const UWorld* World = GetWorld();
+	if (!World || !IsValid(TargetActor) || TargetActor == this)
+	{
+		return false;
+	}
+
+	FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(CodexLSEnemyMeleeOcclusion), false, this);
+	QueryParams.AddIgnoredActor(this);
+	QueryParams.AddIgnoredActor(TargetActor);
+
+	// Test root height so waist-high arena barriers block melee as well as movement.
+	// The raised attack sweep would otherwise look over these barriers.
+	return !World->LineTraceTestByChannel(
+		GetActorLocation(), TargetActor->GetActorLocation(), ECC_Visibility, QueryParams);
+}
+
 bool ACodexLSEnemyCharacter::PerformMeleeAttack()
 {
 	AActor* TargetActor = CombatTarget.Get();
@@ -150,6 +170,14 @@ bool ACodexLSEnemyCharacter::PerformMeleeAttack()
 		UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if (!TargetASC || TargetASC->HasMatchingGameplayTag(CodexLSGameplayTags::State_Player_Dead))
 	{
+		return false;
+	}
+
+	if (!HasUnobstructedMeleeTarget(TargetActor))
+	{
+		UE_LOG(LogCodexLastStand, Log,
+			TEXT("Enemy Melee Blocked | Enemy=%s Target=%s Reason=WorldOcclusion"),
+			*GetName(), *GetNameSafe(TargetActor));
 		return false;
 	}
 
@@ -240,6 +268,31 @@ void ACodexLSEnemyCharacter::StopEnemyAI()
 	{
 		Controller->StopMovement();
 	}
+}
+
+void ACodexLSEnemyCharacter::StopCombatForGameEnd()
+{
+	CombatTarget.Reset();
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+	}
+
+	if (ACodexLSEnemyAIController* EnemyController =
+		Cast<ACodexLSEnemyAIController>(GetController()))
+	{
+		EnemyController->SuspendForGameEnd();
+	}
+	else if (Controller)
+	{
+		Controller->StopMovement();
+	}
+
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("CODEX_STEP3_ENEMY_HALTED Enemy=%s Type=%s Dead=%s"),
+		*GetName(), *GetEnemyArchetypeName(), bDead ? TEXT("true") : TEXT("false"));
 }
 
 void ACodexLSEnemyCharacter::InitializeAbilitySystem()
@@ -364,9 +417,15 @@ void ACodexLSEnemyCharacter::EnterDeathState()
 
 void ACodexLSEnemyCharacter::ApplyDebugColor()
 {
+	if (VisualMaterial)
+	{
+		VisibleMesh->SetMaterial(0, VisualMaterial);
+	}
+
 	if (UMaterialInstanceDynamic* Material = VisibleMesh->CreateAndSetMaterialInstanceDynamic(0))
 	{
 		Material->SetVectorParameterValue(TEXT("Color"), EnemyColor);
+		Material->SetVectorParameterValue(TEXT("ColorTint"), EnemyColor);
 	}
 }
 
@@ -379,6 +438,7 @@ ACodexLSEnemyGrunt::ACodexLSEnemyGrunt()
 	AttackCooldown = 1.5f;
 	AttackRange = 165.0f;
 	MeleeTraceRadius = 70.0f;
+	ScoreValue = 100;
 	EnemyColor = FLinearColor(0.35f, 0.03f, 0.03f, 1.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 285.0f;
 	VisibleMesh->SetRelativeScale3D(FVector(0.85f, 0.85f, 1.35f));
@@ -393,6 +453,7 @@ ACodexLSEnemyRunner::ACodexLSEnemyRunner()
 	AttackCooldown = 0.9f;
 	AttackRange = 145.0f;
 	MeleeTraceRadius = 60.0f;
+	ScoreValue = 150;
 	EnemyColor = FLinearColor(1.0f, 0.22f, 0.02f, 1.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 520.0f;
 	VisibleMesh->SetRelativeScale3D(FVector(0.65f, 0.65f, 0.9f));

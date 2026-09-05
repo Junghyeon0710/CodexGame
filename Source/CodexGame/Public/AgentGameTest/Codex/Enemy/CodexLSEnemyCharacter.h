@@ -13,6 +13,7 @@ class UCodexLSAbilitySystemComponent;
 class UCodexLSAttributeSet;
 class UGameplayAbility;
 class UGameplayEffect;
+class UMaterialInterface;
 class UStaticMeshComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(
@@ -57,13 +58,18 @@ public:
 	ECodexLSEnemyArchetype GetEnemyArchetype() const { return EnemyArchetype; }
 
 	UFUNCTION(BlueprintPure, Category = "Last Stand|Enemy")
+	int32 GetScoreValue() const { return ScoreValue; }
+
+	UFUNCTION(BlueprintPure, Category = "Last Stand|Enemy")
 	FString GetEnemyArchetypeName() const;
 
 	bool TryActivateMeleeAbility();
 	bool PerformMeleeAttack();
+	bool HasUnobstructedMeleeTarget(const AActor* TargetActor) const;
 	void SetCombatTarget(AActor* NewTarget);
 	AActor* GetCombatTarget() const { return CombatTarget.Get(); }
 	void StopEnemyAI();
+	void StopCombatForGameEnd();
 
 	UPROPERTY(BlueprintAssignable, Category = "Last Stand|Enemy")
 	FCodexLSEnemyDeathSignature OnEnemyDeath;
@@ -74,6 +80,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Last Stand|Visual")
 	TObjectPtr<UStaticMeshComponent> VisibleMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Enemy|Visual")
+	TObjectPtr<UMaterialInterface> VisualMaterial;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Enemy")
 	ECodexLSEnemyArchetype EnemyArchetype = ECodexLSEnemyArchetype::Grunt;
@@ -100,6 +109,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Enemy", meta = (ClampMin = "0.0"))
 	float DestroyDelay = 1.5f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Enemy", meta = (ClampMin = "0"))
+	int32 ScoreValue = 100;
 
 private:
 	void InitializeAbilitySystem();

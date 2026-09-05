@@ -84,6 +84,7 @@ FString ACodexLSEnemyAIController::GetEnemyAIStateName() const
 	case ECodexLSEnemyAIState::Idle: return TEXT("Idle");
 	case ECodexLSEnemyAIState::Chase: return TEXT("Chase");
 	case ECodexLSEnemyAIState::Attack: return TEXT("Attack");
+	case ECodexLSEnemyAIState::Suspended: return TEXT("Suspended");
 	case ECodexLSEnemyAIState::Dead: return TEXT("Dead");
 	default: return TEXT("Unknown");
 	}
@@ -100,6 +101,21 @@ void ACodexLSEnemyAIController::EnterDeadState()
 	ClearFocus(EAIFocusPriority::Gameplay);
 	CachedTarget.Reset();
 	SetEnemyAIState(ECodexLSEnemyAIState::Dead);
+	SetActorTickEnabled(false);
+}
+
+void ACodexLSEnemyAIController::SuspendForGameEnd()
+{
+	if (CurrentState == ECodexLSEnemyAIState::Dead ||
+		CurrentState == ECodexLSEnemyAIState::Suspended)
+	{
+		return;
+	}
+
+	StopMovement();
+	ClearFocus(EAIFocusPriority::Gameplay);
+	CachedTarget.Reset();
+	SetEnemyAIState(ECodexLSEnemyAIState::Suspended);
 	SetActorTickEnabled(false);
 }
 
@@ -162,8 +178,11 @@ void ACodexLSEnemyAIController::UpdateCombatState()
 
 	const float Distance2D = FVector::Dist2D(
 		ControlledEnemy->GetActorLocation(), TargetActor->GetActorLocation());
+	const bool bWithinAttackRange = Distance2D <= ControlledEnemy->GetAttackRange();
+	const bool bMeleeTargetObstructed = bWithinAttackRange &&
+		!ControlledEnemy->HasUnobstructedMeleeTarget(TargetActor);
 
-	if (Distance2D <= ControlledEnemy->GetAttackRange())
+	if (bWithinAttackRange && !bMeleeTargetObstructed)
 	{
 		StopMovement();
 		SetFocus(TargetActor, EAIFocusPriority::Gameplay);
@@ -191,9 +210,19 @@ void ACodexLSEnemyAIController::UpdateCombatState()
 
 	if (bEnteredChase || GetMoveStatus() == EPathFollowingStatus::Idle)
 	{
-		const float AcceptanceRadius = FMath::Max(25.0f, ControlledEnemy->GetAttackRange() * 0.8f);
-		const EPathFollowingRequestResult::Type Result =
-			MoveToActor(TargetActor, AcceptanceRadius, false, true, true, nullptr, true);
+		// A nearby target behind a barrier still needs a path around that barrier.
+		// If an older, wider request completes first, Idle retries with this tighter radius.
+		const float AcceptanceRadius = bMeleeTargetObstructed
+			? 25.0f : FMath::Max(25.0f, ControlledEnemy->GetAttackRange() * 0.8f);
+		FAIMoveRequest MoveRequest(TargetActor);
+		MoveRequest.SetUsePathfinding(true);
+		MoveRequest.SetAllowPartialPath(true);
+		MoveRequest.SetNavigationFilter(DefaultNavigationFilterClass);
+		MoveRequest.SetAcceptanceRadius(AcceptanceRadius);
+		MoveRequest.SetReachTestIncludesAgentRadius(false);
+		MoveRequest.SetReachTestIncludesGoalRadius(false);
+		MoveRequest.SetCanStrafe(true);
+		const EPathFollowingRequestResult::Type Result = MoveTo(MoveRequest).Code;
 
 		UE_LOG(LogCodexLastStand, Log,
 			TEXT("Enemy MoveTo | Enemy=%s Type=%s Result=%d Acceptance=%.0f Distance=%.0f"),

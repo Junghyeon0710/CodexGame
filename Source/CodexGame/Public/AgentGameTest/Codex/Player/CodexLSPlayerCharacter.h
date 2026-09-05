@@ -9,13 +9,18 @@
 #include "CodexLSPlayerCharacter.generated.h"
 
 class UArrowComponent;
+class ACodexLSPlayerCharacter;
 class UCameraComponent;
 class UGameplayAbility;
 class UGameplayEffect;
 class UInputAction;
 class UInputMappingContext;
+class UMaterialInterface;
 class USpringArmComponent;
 class UStaticMeshComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(
+	FCodexLSPlayerDeathSignature, ACodexLSPlayerCharacter*, Player);
 
 UCLASS()
 class CODEXGAME_API ACodexLSPlayerCharacter : public ACharacter, public IAbilitySystemInterface
@@ -39,6 +44,13 @@ public:
 	FVector PerformDash(float DashSpeed);
 	void StopDashMovement();
 	bool IsDead() const { return bDead; }
+	bool IsGameplayInputEnabled() const { return bGameplayInputEnabled; }
+
+	UFUNCTION(BlueprintCallable, Category = "Last Stand|Player")
+	void SetGameplayInputEnabled(bool bEnabled);
+
+	UPROPERTY(BlueprintAssignable, Category = "Last Stand|Player")
+	FCodexLSPlayerDeathSignature OnPlayerDeath;
 
 protected:
 	virtual void BeginPlay() override;
@@ -66,6 +78,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Last Stand|Visual")
 	TObjectPtr<UStaticMeshComponent> TestVisual;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Visual")
+	TObjectPtr<UMaterialInterface> VisualMaterial;
+
 	UPROPERTY(VisibleAnywhere, Category = "Last Stand|Visual")
 	TObjectPtr<UArrowComponent> AimArrow;
 
@@ -92,5 +107,6 @@ private:
 	FVector LastMovementWorldDirection = FVector::ZeroVector;
 	FVector2D LastLoggedMoveInput = FVector2D::ZeroVector;
 	FDelegateHandle HealthChangedDelegateHandle;
+	bool bGameplayInputEnabled = true;
 	bool bDead = false;
 };
