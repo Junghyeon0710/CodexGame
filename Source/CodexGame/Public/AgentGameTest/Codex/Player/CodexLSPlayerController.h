@@ -7,6 +7,8 @@
 #include "TimerManager.h"
 #include "CodexLSPlayerController.generated.h"
 
+class UCodexLSUIManagerComponent;
+
 UCLASS()
 class CODEXGAME_API ACodexLSPlayerController : public APlayerController
 {
@@ -15,11 +17,24 @@ class CODEXGAME_API ACodexLSPlayerController : public APlayerController
 public:
 	ACodexLSPlayerController();
 
+	UCodexLSUIManagerComponent* GetUIManagerComponent() const { return UIManagerComponent; }
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
 private:
+	void HandlePauseInput();
+
+	UFUNCTION(Exec)
+	void CodexDebugUIAction(FString Action);
+
+	UFUNCTION(Exec)
+	void CodexDebugUISnapshot();
+
+	UFUNCTION(Exec)
+	void CodexDebugPressEscape();
+
 	UFUNCTION(Exec)
 	void CodexDebugInputChord(FString Chord, bool bDash = false, float HoldSeconds = 0.35f);
 
@@ -84,6 +99,9 @@ private:
 	void DebugDefeatAllWaveEnemies();
 	void DebugForcePlayerDeath();
 	void DebugRestartLevel();
+
+	UPROPERTY(VisibleAnywhere, Category = "Last Stand|UI")
+	TObjectPtr<UCodexLSUIManagerComponent> UIManagerComponent;
 
 	TArray<FKey> DebugHeldKeys;
 	FTimerHandle DebugReleaseTimer;

@@ -129,4 +129,7 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Last Stand|Game Loop", meta = (AllowPrivateAccess = "true"))
 	int32 Score = 0;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Game Loop|Debug")
+	bool bShowDebugOverlay = false;
 };

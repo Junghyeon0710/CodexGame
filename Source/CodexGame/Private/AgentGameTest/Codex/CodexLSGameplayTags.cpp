@@ -30,4 +30,8 @@ namespace CodexLSGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Data_Health, "Data.Health", "SetByCaller initial health magnitude.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Data_MaxHealth, "Data.MaxHealth", "SetByCaller maximum health magnitude.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Data_Cooldown, "Data.Cooldown", "SetByCaller cooldown duration.");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(UI_Layer_Game, "UI.Layer.Game", "Persistent gameplay HUD layer.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(UI_Layer_Menu, "UI.Layer.Menu", "CommonUI menu and result-screen layer.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(UI_Layer_Modal, "UI.Layer.Modal", "Reserved CommonUI modal-dialog layer.");
 }

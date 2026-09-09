@@ -10,6 +10,7 @@
 #include "AgentGameTest/Codex/Enemy/CodexLSEnemyCharacter.h"
 #include "AgentGameTest/Codex/GAS/CodexLSAttributeSet.h"
 #include "AgentGameTest/Codex/CodexLSGameplayTags.h"
+#include "AgentGameTest/Codex/UI/CodexLSUIManagerComponent.h"
 #include "Components/InputComponent.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -18,6 +19,7 @@
 
 ACodexLSPlayerController::ACodexLSPlayerController()
 {
+	UIManagerComponent = CreateDefaultSubobject<UCodexLSUIManagerComponent>(TEXT("UIManagerComponent"));
 	bShowMouseCursor = true;
 	bEnableClickEvents = false;
 	bEnableMouseOverEvents = false;
@@ -34,6 +36,11 @@ void ACodexLSPlayerController::BeginPlay()
 	InputMode.SetHideCursorDuringCapture(false);
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	SetInputMode(InputMode);
+
+	if (UIManagerComponent)
+	{
+		UIManagerComponent->InitializeForController(this);
+	}
 }
 
 void ACodexLSPlayerController::SetupInputComponent()
@@ -55,9 +62,42 @@ void ACodexLSPlayerController::SetupInputComponent()
 	InputComponent->BindKey(EKeys::F8, IE_Pressed, this, &ThisClass::DebugDefeatAllWaveEnemies);
 	InputComponent->BindKey(EKeys::F7, IE_Pressed, this, &ThisClass::DebugForcePlayerDeath);
 	InputComponent->BindKey(EKeys::F6, IE_Pressed, this, &ThisClass::DebugRestartLevel);
+	FInputKeyBinding& PauseBinding = InputComponent->BindKey(
+		EKeys::Escape, IE_Pressed, this, &ThisClass::HandlePauseInput);
+	PauseBinding.bExecuteWhenPaused = true;
 
 	UE_LOG(LogCodexLastStand, Log,
 		TEXT("STEP3 QA Keys Bound | F6=Restart F7=GameOver F8=DefeatWave F9=SoloGrunt F10=SoloRunner F11=Multi F12=Attack Insert=Snapshot Home=BoostHealth End=LitView"));
+}
+
+void ACodexLSPlayerController::HandlePauseInput()
+{
+	if (UIManagerComponent)
+	{
+		UIManagerComponent->TogglePause();
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugUIAction(FString Action)
+{
+	if (UIManagerComponent)
+	{
+		UIManagerComponent->DebugAction(Action);
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugUISnapshot()
+{
+	if (UIManagerComponent)
+	{
+		UIManagerComponent->DebugSnapshot();
+	}
+}
+
+void ACodexLSPlayerController::CodexDebugPressEscape()
+{
+	InputKey(FInputKeyEventArgs::CreateSimulated(EKeys::Escape, IE_Pressed, 1.0f));
+	InputKey(FInputKeyEventArgs::CreateSimulated(EKeys::Escape, IE_Released, 0.0f));
 }
 
 void ACodexLSPlayerController::CodexDebugInputChord(FString Chord, bool bDash, float HoldSeconds)

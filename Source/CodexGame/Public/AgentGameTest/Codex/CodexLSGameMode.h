@@ -46,8 +46,21 @@ class CODEXGAME_API ACodexLSGameMode : public AGameModeBase
 public:
 	ACodexLSGameMode();
 
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void StartPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Last Stand|Game Loop")
+	void StartGameplayFromMainMenu();
+
+	UFUNCTION(BlueprintCallable, Category = "Last Stand|Game Loop")
+	void ReturnToMainMenu();
+
+	UFUNCTION(BlueprintPure, Category = "Last Stand|Game Loop")
+	bool ShouldShowMainMenuOnBoot() const { return bRuntimeStartWithMainMenu; }
+
+	UFUNCTION(BlueprintPure, Category = "Last Stand|UI")
+	bool UsesFrontendUI() const { return bStartWithMainMenu; }
 
 	UFUNCTION(BlueprintPure, Category = "Last Stand|Game Loop")
 	ACodexLSGameState* GetCodexGameState() const { return CachedGameState; }
@@ -102,6 +115,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Wave", meta = (ClampMin = "0.1", ClampMax = "15.0"))
 	float BetweenWaveDelay = 4.0f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|UI")
+	bool bStartWithMainMenu = false;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Spawn", meta = (ClampMin = "1", ClampMax = "10"))
 	int32 MaxSpawnRequestRetries = 3;
 
@@ -122,6 +138,9 @@ private:
 	int32 CurrentSpawnRequestRetries = 0;
 	int32 InitializationAttempts = 0;
 	bool bWaveCompletionCheckQueued = false;
+	bool bRuntimeStartWithMainMenu = false;
+	bool bGameLoopInitialized = false;
+	bool bStartRequested = false;
 	int32 DebugKillPlayerAfterSpawnCount = 0;
 	FString RuntimeSessionId;
 

@@ -52,6 +52,20 @@ ACodexLSGameMode::ACodexLSGameMode()
 	WaveDefinitions.Emplace(10, 6, 0.45f);
 }
 
+void ACodexLSGameMode::InitGame(
+	const FString& MapName,
+	const FString& Options,
+	FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+	bRuntimeStartWithMainMenu = bStartWithMainMenu &&
+		!UGameplayStatics::HasOption(Options, TEXT("AutoPlay"));
+
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("CODEX_STEP5_BOOT_MODE Map=%s MainMenu=%s Options=%s"),
+		*MapName, bRuntimeStartWithMainMenu ? TEXT("true") : TEXT("false"), *Options);
+}
+
 void ACodexLSGameMode::StartPlay()
 {
 	Super::StartPlay();
@@ -132,6 +146,7 @@ void ACodexLSGameMode::TryInitializeGameLoop()
 	GetWorldTimerManager().ClearTimer(InitializationTimerHandle);
 	PlayerCharacter->OnPlayerDeath.AddUniqueDynamic(this, &ThisClass::HandlePlayerDeath);
 	CachedGameState->InitializeRuntimeState(WaveDefinitions.Num());
+	bGameLoopInitialized = true;
 
 	UE_LOG(LogCodexLastStand, Log,
 		TEXT("CODEX_STEP3_INIT_SUCCESS Session=%s Attempts=%d GameState=%s Spawner=%s Player=%s"),
@@ -162,7 +177,54 @@ void ACodexLSGameMode::TryInitializeGameLoop()
 	}
 #endif
 
+	if (bRuntimeStartWithMainMenu && !bStartRequested)
+	{
+		PlayerCharacter->SetGameplayInputEnabled(false);
+		UE_LOG(LogCodexLastStand, Log,
+			TEXT("CODEX_STEP5_WAITING_FOR_PLAY Session=%s Phase=None Timers=false"),
+			*RuntimeSessionId);
+		return;
+	}
+
+	StartGameplayFromMainMenu();
+}
+
+void ACodexLSGameMode::StartGameplayFromMainMenu()
+{
+	bStartRequested = true;
+	bRuntimeStartWithMainMenu = false;
+
+	if (!bGameLoopInitialized || !CachedGameState || !PlayerCharacter)
+	{
+		UE_LOG(LogCodexLastStand, Log,
+			TEXT("CODEX_STEP5_PLAY_LATCHED Session=%s Initialized=%s"),
+			*RuntimeSessionId, bGameLoopInitialized ? TEXT("true") : TEXT("false"));
+		return;
+	}
+
+	if (CachedGameState->GetGamePhase() != ECodexLSGamePhase::None)
+	{
+		UE_LOG(LogCodexLastStand, Warning,
+			TEXT("CODEX_STEP5_PLAY_IGNORED Session=%s Phase=%s"),
+			*RuntimeSessionId, *GetPhaseName(CachedGameState->GetGamePhase()));
+		return;
+	}
+
+	PlayerCharacter->SetGameplayInputEnabled(true);
 	BeginInitialPreparation();
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("CODEX_STEP5_GAMEPLAY_STARTED Session=%s"), *RuntimeSessionId);
+}
+
+void ACodexLSGameMode::ReturnToMainMenu()
+{
+	const FString CurrentLevel = UGameplayStatics::GetCurrentLevelName(this, true);
+	ClearGameLoopTimers();
+	UGameplayStatics::SetGamePaused(this, false);
+	UE_LOG(LogCodexLastStand, Log,
+		TEXT("CODEX_STEP5_MAIN_MENU_REQUEST Session=%s Level=%s"),
+		*RuntimeSessionId, *CurrentLevel);
+	UGameplayStatics::OpenLevel(this, FName(*CurrentLevel), true);
 }
 
 void ACodexLSGameMode::BeginInitialPreparation()
@@ -872,7 +934,8 @@ void ACodexLSGameMode::RestartCurrentLevel()
 		CachedGameState ? *GetPhaseName(CachedGameState->GetGamePhase()) : TEXT("Missing"));
 
 	ClearGameLoopTimers();
-	UGameplayStatics::OpenLevel(this, FName(*CurrentLevel), true);
+	UGameplayStatics::SetGamePaused(this, false);
+	UGameplayStatics::OpenLevel(this, FName(*CurrentLevel), true, TEXT("AutoPlay"));
 }
 
 int32 ACodexLSGameMode::GetRemainingSpawnCount() const

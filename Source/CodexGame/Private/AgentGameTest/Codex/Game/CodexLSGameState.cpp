@@ -170,7 +170,16 @@ bool ACodexLSGameState::SetScore(int32 NewScore)
 
 void ACodexLSGameState::UpdateDebugDisplay() const
 {
-	if (!GEngine || !GetWorld() || !GetWorld()->IsGameWorld())
+	if (!GEngine)
+	{
+		return;
+	}
+	if (!bShowDebugOverlay)
+	{
+		GEngine->RemoveOnScreenDebugMessage(CodexStep3DebugMessageKey);
+		return;
+	}
+	if (!GetWorld() || !GetWorld()->IsGameWorld())
 	{
 		return;
 	}
