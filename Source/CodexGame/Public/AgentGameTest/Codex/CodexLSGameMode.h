@@ -11,6 +11,7 @@ class ACodexLSEnemySpawner;
 class ACodexLSGameState;
 class ACodexLSPlayerCharacter;
 class UAbilitySystemComponent;
+class USoundBase;
 enum class ECodexLSGamePhase : uint8;
 
 USTRUCT(BlueprintType)
@@ -89,6 +90,7 @@ private:
 	void EnterVictory();
 	void EnterGameOver(const FString& Reason);
 	void SetGamePhase(ECodexLSGamePhase NewPhase, const FString& Reason);
+	void PlayPhaseFeedback(ECodexLSGamePhase NewPhase);
 	void ClearGameLoopTimers();
 	void HaltActiveEnemies();
 	void ApplyDebugPlayerHealth(float Health);
@@ -117,6 +119,18 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|UI")
 	bool bStartWithMainMenu = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> WaveStartSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> WaveClearSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> VictorySound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> GameOverSound;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Spawn", meta = (ClampMin = "1", ClampMax = "10"))
 	int32 MaxSpawnRequestRetries = 3;

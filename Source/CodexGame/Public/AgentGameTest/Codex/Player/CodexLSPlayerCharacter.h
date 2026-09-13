@@ -16,6 +16,8 @@ class UGameplayEffect;
 class UInputAction;
 class UInputMappingContext;
 class UMaterialInterface;
+class UNiagaraSystem;
+class USoundBase;
 class USpringArmComponent;
 class UStaticMeshComponent;
 
@@ -41,7 +43,10 @@ public:
 	FVector GetAimDirection() const { return AimDirection; }
 	FVector GetAimWorldPosition() const { return AimWorldPosition; }
 	bool TracePrimaryAttack(float Range, FHitResult& OutHitResult) const;
+	void PlayPrimaryAttackFeedback(
+		const FHitResult& HitResult, bool bHit, bool bHitGameplayTarget);
 	FVector PerformDash(float DashSpeed);
+	void PlayDashFeedback(const FVector& DashDirection, bool bEnding);
 	void StopDashMovement();
 	bool IsDead() const { return bDead; }
 	bool IsGameplayInputEnabled() const { return bGameplayInputEnabled; }
@@ -80,6 +85,24 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Visual")
 	TObjectPtr<UMaterialInterface> VisualMaterial;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<UNiagaraSystem> PrimaryAttackSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<UNiagaraSystem> WorldImpactSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<UNiagaraSystem> DashSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> PrimaryAttackSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> DashSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> DamageSound;
 
 	UPROPERTY(VisibleAnywhere, Category = "Last Stand|Visual")
 	TObjectPtr<UArrowComponent> AimArrow;

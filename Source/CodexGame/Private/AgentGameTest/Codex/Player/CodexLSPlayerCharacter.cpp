@@ -13,7 +13,6 @@
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
@@ -24,6 +23,10 @@
 #include "InputMappingContext.h"
 #include "Math/RotationMatrix.h"
 #include "Materials/MaterialInterface.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 #include "UObject/ConstructorHelpers.h"
 
 namespace
@@ -85,6 +88,31 @@ ACodexLSPlayerCharacter::ACodexLSPlayerCharacter()
 	AimArrow->SetRelativeLocation(FVector(45.0f, 0.0f, 0.0f));
 	AimArrow->ArrowColor = FColor::Cyan;
 	AimArrow->ArrowSize = 1.5f;
+	AimArrow->SetHiddenInGame(true);
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> PrimaryAttackSystemFinder(
+		TEXT("/Game/AgentGameTest/Codex/VFX/Player/NS_Player_Attack_Codex.NS_Player_Attack_Codex"));
+	PrimaryAttackSystem = PrimaryAttackSystemFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> WorldImpactSystemFinder(
+		TEXT("/Game/AgentGameTest/Codex/VFX/Environment/NS_World_Impact_Codex.NS_World_Impact_Codex"));
+	WorldImpactSystem = WorldImpactSystemFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> DashSystemFinder(
+		TEXT("/Game/AgentGameTest/Codex/VFX/Player/NS_Player_Dash_Codex.NS_Player_Dash_Codex"));
+	DashSystem = DashSystemFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> PrimaryAttackSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Player/S_Player_Attack_Codex.S_Player_Attack_Codex"));
+	PrimaryAttackSound = PrimaryAttackSoundFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> DashSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Player/S_Player_Dash_Codex.S_Player_Dash_Codex"));
+	DashSound = DashSoundFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> DamageSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Player/S_Player_Damage_Codex.S_Player_Damage_Codex"));
+	DamageSound = DamageSoundFinder.Object;
 
 	DefaultAttributesEffect = UCodexLSGE_DefaultAttributes::StaticClass();
 	DefaultAbilities.Add(UCodexLSGA_PrimaryAttack::StaticClass());
@@ -178,8 +206,10 @@ UAbilitySystemComponent* ACodexLSPlayerCharacter::GetAbilitySystemComponent() co
 
 bool ACodexLSPlayerCharacter::TracePrimaryAttack(float Range, FHitResult& OutHitResult) const
 {
-	const FVector TraceStart = GetActorLocation() + AimDirection * 65.0f;
-	const FVector TraceEnd = TraceStart + AimDirection * Range;
+	// Start inside the ignored player capsule so point-blank enemies cannot sit
+	// behind the muzzle offset (notably the smaller Runner collision capsule).
+	const FVector TraceStart = GetActorLocation();
+	const FVector TraceEnd = TraceStart + AimDirection * (Range + 65.0f);
 
 	FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(CodexLSPrimaryAttack), true, this);
 	QueryParams.AddIgnoredActor(this);
@@ -187,16 +217,35 @@ bool ACodexLSPlayerCharacter::TracePrimaryAttack(float Range, FHitResult& OutHit
 	const bool bHit = GetWorld()->LineTraceSingleByChannel(
 		OutHitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
 
-	DrawDebugLine(GetWorld(), TraceStart, bHit ? OutHitResult.ImpactPoint : TraceEnd,
-		bHit ? FColor::Red : FColor::Yellow, false, 0.35f, 0, 4.0f);
+	return bHit;
+}
 
-	if (bHit)
+void ACodexLSPlayerCharacter::PlayPrimaryAttackFeedback(
+	const FHitResult& HitResult, bool bHit, bool bHitGameplayTarget)
+{
+	const FVector MuzzleLocation = GetActorLocation() + AimDirection * 72.0f + FVector(0.0f, 0.0f, 20.0f);
+	const FRotator AttackRotation = AimDirection.Rotation();
+
+	if (PrimaryAttackSystem)
 	{
-		DrawDebugSphere(GetWorld(), OutHitResult.ImpactPoint, 18.0f, 12,
-			FColor::Red, false, 0.35f, 0, 2.0f);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this, PrimaryAttackSystem, MuzzleLocation, AttackRotation,
+			FVector(1.0f), true, true, ENCPoolMethod::AutoRelease, true);
 	}
 
-	return bHit;
+	if (PrimaryAttackSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, PrimaryAttackSound, MuzzleLocation, 0.58f, 1.0f);
+	}
+
+	if (bHit && !bHitGameplayTarget && WorldImpactSystem)
+	{
+		const FVector ImpactNormal = HitResult.ImpactNormal.IsNearlyZero()
+			? FVector::UpVector : HitResult.ImpactNormal;
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this, WorldImpactSystem, HitResult.ImpactPoint, ImpactNormal.Rotation(),
+			FVector(1.0f), true, true, ENCPoolMethod::AutoRelease, true);
+	}
 }
 
 FVector ACodexLSPlayerCharacter::PerformDash(float DashSpeed)
@@ -208,6 +257,28 @@ FVector ACodexLSPlayerCharacter::PerformDash(float DashSpeed)
 
 	LaunchCharacter(DashDirection * DashSpeed, true, false);
 	return DashDirection;
+}
+
+void ACodexLSPlayerCharacter::PlayDashFeedback(const FVector& DashDirection, bool bEnding)
+{
+	FVector FlatDirection = DashDirection.GetSafeNormal2D();
+	if (FlatDirection.IsNearlyZero())
+	{
+		FlatDirection = AimDirection;
+	}
+
+	if (DashSystem)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this, DashSystem, GetActorLocation() + FVector(0.0f, 0.0f, 15.0f),
+			(-FlatDirection).Rotation(), bEnding ? FVector(0.72f) : FVector(1.0f),
+			true, true, ENCPoolMethod::AutoRelease, true);
+	}
+
+	if (!bEnding && DashSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DashSound, GetActorLocation(), 0.62f, 1.0f);
+	}
 }
 
 void ACodexLSPlayerCharacter::StopDashMovement()
@@ -269,6 +340,11 @@ void ACodexLSPlayerCharacter::InitializeAbilitySystem()
 
 void ACodexLSPlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
+	if (!bDead && DamageSound && ChangeData.NewValue < ChangeData.OldValue && ChangeData.OldValue > 0.0f)
+	{
+		UGameplayStatics::PlaySound2D(this, DamageSound, 0.72f, 1.0f);
+	}
+
 	if (bDead || ChangeData.NewValue > 0.0f || ChangeData.OldValue <= 0.0f)
 	{
 		return;

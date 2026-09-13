@@ -3,12 +3,29 @@
 #include "AgentGameTest/Codex/UI/CodexLSCommonButton.h"
 
 #include "CommonTextBlock.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
+#include "UObject/ConstructorHelpers.h"
 
 UCodexLSCommonButton::UCodexLSCommonButton()
 {
 	SetIsFocusable(true);
 	SetMinDimensions(360, 64);
 	ButtonText = FText::FromString(TEXT("ACTION"));
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> ConfirmSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/UI/S_UI_Confirm_Codex.S_UI_Confirm_Codex"));
+	ConfirmSound = ConfirmSoundFinder.Object;
+}
+
+void UCodexLSCommonButton::NativeOnClicked()
+{
+	// Play before broadcasting OnClicked so level travel/restart cannot cut the cue off.
+	if (!GetLocked() && IsInteractionEnabled() && ConfirmSound)
+	{
+		UGameplayStatics::PlaySound2D(this, ConfirmSound, 0.55f, 1.0f);
+	}
+	Super::NativeOnClicked();
 }
 
 void UCodexLSCommonButton::NativeOnInitialized()

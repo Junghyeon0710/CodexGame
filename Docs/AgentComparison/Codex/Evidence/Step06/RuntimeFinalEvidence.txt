@@ -1,0 +1,56 @@
+PROJECT: LAST STAND - STEP 6 Final Runtime Evidence
+Source: Saved/Logs/CodexGame*.log (current and preserved backup logs)
+Timezone note: Unreal log timestamps are UTC. User-facing documentation converts the run to KST where relevant.
+
+Final Main Menu / Play
+[2026.09.10-10.48.12:531] CODEX_STEP5_MAIN_MENU_SHOWN Focus=PLAY
+[2026.09.10-10.48.51:854] CODEX_STEP5_PLAY_ACCEPTED MenuPopped=true HUDVisible=true Input=Gameplay
+
+Final Full-Flow Session 703EF682
+[2026.09.10-10.49.08:436] CODEX_STEP3_WAVE_START Session=703EF682 Wave=1 MaxWave=3 Grunt=5 Runner=0 Planned=5 Interval=0.45
+[2026.09.10-10.49.10:360] CODEX_STEP3_SPAWN_COMPLETE Session=703EF682 Wave=1 Alive=5 TotalSpawned=5
+[2026.09.10-10.50.08:457] CODEX_STEP3_WAVE_CLEAR Session=703EF682 Wave=1 Alive=0 Remaining=0 Score=500
+[2026.09.10-10.50.12:474] CODEX_STEP3_WAVE_START Session=703EF682 Wave=2 MaxWave=3 Grunt=7 Runner=3 Planned=10 Interval=0.45
+[2026.09.10-10.50.16:639] CODEX_STEP3_SPAWN_COMPLETE Session=703EF682 Wave=2 Alive=10 TotalSpawned=15
+[2026.09.10-10.52.27:575] CODEX_STEP3_WAVE_CLEAR Session=703EF682 Wave=2 Alive=0 Remaining=0 Score=1650
+[2026.09.10-10.52.31:594] CODEX_STEP3_WAVE_START Session=703EF682 Wave=3 MaxWave=3 Grunt=10 Runner=6 Planned=16 Interval=0.45
+[2026.09.10-10.52.38:460] CODEX_STEP3_SPAWN_COMPLETE Session=703EF682 Wave=3 Alive=16 TotalSpawned=31
+[2026.09.10-10.55.01:333] CODEX_STEP3_WAVE_CLEAR Session=703EF682 Wave=3 Alive=0 Remaining=0 Score=3550
+[2026.09.10-10.55.01:336] CODEX_STEP3_VICTORY Session=703EF682 Wave=3 Alive=0 Remaining=0 Score=3550 TotalSpawned=31 Wave4Started=false
+[2026.09.10-10.55.44:238] CODEX_STEP3_SNAPSHOT Session=703EF682 Phase=Victory Wave=3/3 Alive=0 Tracked=0 Remaining=0 TotalSpawned=31 Score=3550 PlayerDead=false DeadTag=false Input=false Abilities=2 PrepareOrTransitionTimer=false SpawnTimer=false CompletionTimer=false
+
+Runner Actual PrimaryAttack Regression Proof
+[2026.09.10-10.51.01:674] Enemy Damage Received | Enemy=BP_Runner_Arena_Codex_C_1 Type=Runner Damage=20 Health: 60 -> 40
+[2026.09.10-10.51.02:697] Enemy Damage Received | Enemy=BP_Runner_Arena_Codex_C_1 Type=Runner Damage=20 Health: 40 -> 20
+[2026.09.10-10.51.03:695] Enemy Damage Received | Enemy=BP_Runner_Arena_Codex_C_1 Type=Runner Damage=20 Health: 20 -> 0
+[2026.09.10-10.51.04:689] Enemy Damage Received | Enemy=BP_Runner_Arena_Codex_C_0 Type=Runner Damage=20 Health: 60 -> 40
+[2026.09.10-10.51.05:666] Enemy Damage Received | Enemy=BP_Runner_Arena_Codex_C_0 Type=Runner Damage=20 Health: 40 -> 20
+[2026.09.10-10.51.59:076] Enemy Damage Received | Enemy=BP_Runner_Arena_Codex_C_0 Type=Runner Damage=20 Health: 20 -> 0
+
+Victory Restart / Natural GameOver / GameOver Restart
+[2026.09.10-10.58.32:252] CODEX_STEP5_RESTART_BUTTON AutoPlay=true
+[2026.09.10-10.58.44:664] CODEX_STEP5_RESULT_SHOWN Type=GameOver FinalScore=0 Focus=RESTART Success=true
+[2026.09.10-10.58.44:665] CODEX_STEP3_GAME_OVER Session=C48810E3 From=WaveInProgress Reason=PlayerDeathEvent Wave=1 Alive=5 PendingCancelled=0 Score=0 SpawnTimer=false TransitionTimer=false GameOverPriority=true
+[2026.09.10-10.59.08:508] CODEX_STEP3_SNAPSHOT Session=C48810E3 Phase=GameOver Wave=1/3 Alive=5 Tracked=5 Remaining=0 TotalSpawned=5 Score=0 PlayerHealth=0/100 PlayerDead=true DeadTag=true Input=false Abilities=2 PrepareOrTransitionTimer=false SpawnTimer=false CompletionTimer=false
+[2026.09.10-11.00.17:292] CODEX_STEP5_RESTART_BUTTON AutoPlay=true
+[2026.09.10-11.00.18:140] CODEX_STEP3_SNAPSHOT Session=DDC46529 Phase=Preparing Wave=0/3 Alive=0 Tracked=0 Remaining=0 TotalSpawned=0 Score=0 PlayerDead=false DeadTag=false Input=true Abilities=2 PrepareOrTransitionTimer=true SpawnTimer=false CompletionTimer=false
+
+Pause / Resume / Main Menu Return
+[2026.09.10-11.00.50:889] CODEX_STEP5_PAUSE_SHOWN Paused=true Focus=RESUME
+[2026.09.10-11.00.51:672] CODEX_STEP5_RESUMED Paused=false Input=Gameplay HUDPreserved=true
+[2026.09.10-11.01.33:942] CODEX_STEP5_MAIN_MENU_BUTTON AutoPlay=false
+[2026.09.10-11.01.34:105] CODEX_STEP5_MAIN_MENU_SHOWN Focus=PLAY
+
+Interpretation
+- The final victory run is QA-assisted: Wave 1 and two Runner kills use actual PrimaryAttack, while the remaining Wave 2 and Wave 3 enemies are accelerated with the QA GAS damage helper after all spawns complete.
+- The helper does not write Score, Wave, Enemy Count, or UI values directly; it uses the same GameplayEffect -> AttributeSet -> Enemy Death -> GameMode event path.
+- Session 703EF682 elapsed 5m55.388s from Preparing to Victory, including MCP command, screenshot, and log-inspection pauses. This is not a clean human balance benchmark.
+
+Preserved STEP 6 Raw Event Count Audit
+- CodexGame-backup-2026.09.09-11.15.13.log: GameOver=1, Victory=0, UI Restart=0, QA Health Restart=0
+- CodexGame-backup-2026.09.10-10.31.09.log: GameOver=6, Victory=0, UI Restart=4, QA Health Restart=2
+- CodexGame-backup-2026.09.10-10.45.43.log: GameOver=1, Victory=0, UI Restart=0, QA Health Restart=1
+- CodexGame.log: GameOver=1, Victory=1, UI Restart=2, QA Health Restart=1
+- Totals: GameOver phase transitions=9, Victory transitions=1, UI Restart=6, QA Health Restart=4, total restart requests=10.
+- Method: exact literal marker counts in preserved STEP 6 logs at or after the 2026-09-09 15:55:43 KST start.
+- These are raw transitions/requests, not ten separate dedicated restart acceptance tests. The final dedicated Victory Restart and GameOver Restart are shown above.

@@ -272,6 +272,13 @@ def create_hud():
     bp = create_widget(ASSET_PATHS["hud"], load_native("/Script/CodexGame.CodexLSHUDWidget"))
     root_canvas, root_overlay = make_design_root(bp, "HUD")
 
+    damage_flash = configure_border(
+        add(bp, unreal.Border, "DamageFlashBorder", root_overlay),
+        color(196, 24, 18, 58),
+    )
+    fill(damage_flash)
+    damage_flash.set_visibility(unreal.SlateVisibility.COLLAPSED)
+
     border(bp, root_canvas, "TopWavePanel", (0, 34), (430, 76), PANEL,
            color(83, 97, 103, 180), 1.0, 4.0, (0.5, 0.0), (0.5, 0.0))
     text(bp, root_canvas, "WaveText", "PREPARING", (0, 43), (390, 36), 27, WHITE,
@@ -512,6 +519,7 @@ def main():
         validate(hud_bp, (
             "HealthBar", "HealthText", "WaveText", "EnemyCountText", "ScoreText",
             "DashProgressBar", "DashText", "PhaseText", "AnnouncementText", "AnnouncementPlate",
+            "DamageFlashBorder",
         )),
         validate(main_bp, ("PlayButton", "ExitButton", "GameTitle")),
         validate(pause_bp, ("ResumeButton", "RestartButton", "MainMenuButton", "PauseTitle")),

@@ -37,6 +37,8 @@ private:
 	void RefreshHealth();
 	void RefreshDashCooldown();
 	void SetDashReady();
+	void ShowDamageFlash();
+	void HideDamageFlash();
 	void ShowAnnouncement(const FText& Message);
 	void HideAnnouncement();
 
@@ -86,6 +88,9 @@ private:
 	UPROPERTY(Transient, meta = (BindWidget))
 	TObjectPtr<UBorder> AnnouncementPlate;
 
+	UPROPERTY(Transient, meta = (BindWidget))
+	TObjectPtr<UBorder> DamageFlashBorder;
+
 	TWeakObjectPtr<ACodexLSGameState> BoundGameState;
 	TWeakObjectPtr<UAbilitySystemComponent> BoundASC;
 	FDelegateHandle HealthDelegateHandle;
@@ -94,6 +99,7 @@ private:
 	FTimerHandle BindingRetryTimerHandle;
 	FTimerHandle DashUpdateTimerHandle;
 	FTimerHandle AnnouncementTimerHandle;
+	FTimerHandle DamageFlashTimerHandle;
 	int32 BindingAttempts = 0;
 	int32 CachedWave = 0;
 	int32 CachedMaxWave = 0;

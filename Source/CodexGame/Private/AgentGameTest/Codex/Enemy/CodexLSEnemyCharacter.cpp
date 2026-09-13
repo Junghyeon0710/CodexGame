@@ -13,14 +13,17 @@
 #include "AgentGameTest/Codex/GAS/CodexLSGameplayEffects.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayAbilitySpec.h"
+#include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInterface.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
+#include "Sound/SoundBase.h"
 #include "UObject/ConstructorHelpers.h"
 
 ACodexLSEnemyCharacter::ACodexLSEnemyCharacter()
@@ -69,6 +72,22 @@ ACodexLSEnemyCharacter::ACodexLSEnemyCharacter()
 	DamageEffect = UCodexLSGE_Damage::StaticClass();
 	MeleeAbility = UCodexLSGA_EnemyMeleeAttack::StaticClass();
 
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> HitSystemFinder(
+		TEXT("/Game/AgentGameTest/Codex/VFX/Enemy/NS_Enemy_Hit_Codex.NS_Enemy_Hit_Codex"));
+	HitSystem = HitSystemFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> DeathSystemFinder(
+		TEXT("/Game/AgentGameTest/Codex/VFX/Enemy/NS_Enemy_Death_Codex.NS_Enemy_Death_Codex"));
+	DeathSystem = DeathSystemFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> HitSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Enemy/S_Enemy_Hit_Codex.S_Enemy_Hit_Codex"));
+	HitSound = HitSoundFinder.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> DeathSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Enemy/S_Enemy_Death_Codex.S_Enemy_Death_Codex"));
+	DeathSound = DeathSoundFinder.Object;
+
 	AIControllerClass = ACodexLSEnemyAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	Tags.Add(TEXT("Codex.Enemy"));
@@ -78,12 +97,18 @@ void ACodexLSEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ApplyDebugColor();
+	ApplyVisualColor();
 	InitializeAbilitySystem();
 }
 
 void ACodexLSEnemyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(HitFlashTimer);
+		World->GetTimerManager().ClearTimer(DeathVisualTimer);
+	}
+
 	if (AbilitySystemComponent)
 	{
 		if (HealthChangedDelegateHandle.IsValid())
@@ -209,6 +234,7 @@ bool ACodexLSEnemyCharacter::PerformMeleeAttack()
 		QueryParams);
 
 	bool bHitTarget = false;
+	FHitResult TargetHitResult;
 	if (bAnyHit)
 	{
 		for (const FHitResult& HitResult : HitResults)
@@ -216,15 +242,11 @@ bool ACodexLSEnemyCharacter::PerformMeleeAttack()
 			if (HitResult.GetActor() == TargetActor)
 			{
 				bHitTarget = true;
+				TargetHitResult = HitResult;
 				break;
 			}
 		}
 	}
-
-	DrawDebugLine(GetWorld(), TraceStart, TraceEnd,
-		bHitTarget ? FColor::Red : FColor::Orange, false, 0.35f, 0, 4.0f);
-	DrawDebugSphere(GetWorld(), TraceEnd, MeleeTraceRadius, 16,
-		bHitTarget ? FColor::Red : FColor::Orange, false, 0.35f, 0, 2.0f);
 
 	if (!bHitTarget)
 	{
@@ -235,6 +257,7 @@ bool ACodexLSEnemyCharacter::PerformMeleeAttack()
 
 	FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
 	Context.AddSourceObject(this);
+	Context.AddHitResult(TargetHitResult, true);
 	FGameplayEffectSpecHandle DamageSpec =
 		AbilitySystemComponent->MakeOutgoingSpec(DamageEffect, 1.0f, Context);
 
@@ -368,14 +391,20 @@ void ACodexLSEnemyCharacter::GrantDefaultAbility()
 void ACodexLSEnemyCharacter::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
 	const float Damage = FMath::Max(0.0f, ChangeData.OldValue - ChangeData.NewValue);
+	const bool bLethalDamage = !bDead && ChangeData.NewValue <= 0.0f && ChangeData.OldValue > 0.0f;
 	if (Damage > 0.0f)
 	{
 		UE_LOG(LogCodexLastStand, Log,
 			TEXT("Enemy Damage Received | Enemy=%s Type=%s Damage=%.0f Health: %.0f -> %.0f"),
 			*GetName(), *GetEnemyArchetypeName(), Damage, ChangeData.OldValue, ChangeData.NewValue);
+
+		if (!bLethalDamage)
+		{
+			PlayHitFeedback();
+		}
 	}
 
-	if (!bDead && ChangeData.NewValue <= 0.0f && ChangeData.OldValue > 0.0f)
+	if (bLethalDamage)
 	{
 		EnterDeathState();
 	}
@@ -402,6 +431,7 @@ void ACodexLSEnemyCharacter::EnterDeathState()
 	GetCharacterMovement()->DisableMovement();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	VisibleMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PlayDeathFeedback();
 
 	OnEnemyDeath.Broadcast(this);
 	UE_LOG(LogCodexLastStand, Log,
@@ -415,18 +445,95 @@ void ACodexLSEnemyCharacter::EnterDeathState()
 	SetLifeSpan(DestroyDelay);
 }
 
-void ACodexLSEnemyCharacter::ApplyDebugColor()
+void ACodexLSEnemyCharacter::ApplyVisualColor()
 {
 	if (VisualMaterial)
 	{
 		VisibleMesh->SetMaterial(0, VisualMaterial);
 	}
 
-	if (UMaterialInstanceDynamic* Material = VisibleMesh->CreateAndSetMaterialInstanceDynamic(0))
+	DynamicVisualMaterial = VisibleMesh->CreateAndSetMaterialInstanceDynamic(0);
+	if (DynamicVisualMaterial)
 	{
-		Material->SetVectorParameterValue(TEXT("Color"), EnemyColor);
-		Material->SetVectorParameterValue(TEXT("ColorTint"), EnemyColor);
+		DynamicVisualMaterial->SetVectorParameterValue(TEXT("Color"), EnemyColor);
+		DynamicVisualMaterial->SetVectorParameterValue(TEXT("ColorTint"), EnemyColor);
 	}
+}
+
+void ACodexLSEnemyCharacter::PlayHitFeedback()
+{
+	if (HitSystem)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this, HitSystem, GetActorLocation() + FVector(0.0f, 0.0f, 25.0f),
+			FRotator::ZeroRotator, FVector(1.0f), true, true,
+			ENCPoolMethod::AutoRelease, true);
+	}
+
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this, HitSound, GetActorLocation(), 0.34f,
+			EnemyArchetype == ECodexLSEnemyArchetype::Runner ? 1.12f : 0.92f);
+	}
+
+	if (DynamicVisualMaterial)
+	{
+		const FLinearColor FlashColor(2.5f, 1.2f, 0.22f, 1.0f);
+		DynamicVisualMaterial->SetVectorParameterValue(TEXT("Color"), FlashColor);
+		DynamicVisualMaterial->SetVectorParameterValue(TEXT("ColorTint"), FlashColor);
+		if (UWorld* World = GetWorld())
+		{
+			World->GetTimerManager().SetTimer(
+				HitFlashTimer, this, &ThisClass::RestoreVisualColor, 0.08f, false);
+		}
+	}
+}
+
+void ACodexLSEnemyCharacter::RestoreVisualColor()
+{
+	if (DynamicVisualMaterial && !bDead)
+	{
+		DynamicVisualMaterial->SetVectorParameterValue(TEXT("Color"), EnemyColor);
+		DynamicVisualMaterial->SetVectorParameterValue(TEXT("ColorTint"), EnemyColor);
+	}
+}
+
+void ACodexLSEnemyCharacter::PlayDeathFeedback()
+{
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(HitFlashTimer);
+	}
+
+	const FVector FeedbackLocation = GetActorLocation() + FVector(0.0f, 0.0f, 35.0f);
+	const float ArchetypeScale =
+		EnemyArchetype == ECodexLSEnemyArchetype::Runner ? 0.82f : 1.0f;
+	if (DeathSystem)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this, DeathSystem, FeedbackLocation, FRotator::ZeroRotator,
+			FVector(ArchetypeScale), true, true, ENCPoolMethod::AutoRelease, true);
+	}
+
+	if (DeathSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this, DeathSound, FeedbackLocation, 0.42f,
+			EnemyArchetype == ECodexLSEnemyArchetype::Runner ? 1.15f : 0.88f);
+	}
+
+	VisibleMesh->SetRelativeScale3D(VisibleMesh->GetRelativeScale3D() * 0.72f);
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().SetTimer(
+			DeathVisualTimer, this, &ThisClass::FinishDeathVisual, 0.16f, false);
+	}
+}
+
+void ACodexLSEnemyCharacter::FinishDeathVisual()
+{
+	VisibleMesh->SetHiddenInGame(true);
 }
 
 ACodexLSEnemyGrunt::ACodexLSEnemyGrunt()

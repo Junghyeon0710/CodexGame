@@ -42,6 +42,7 @@ void UCodexLSHUDWidget::NativeOnInitialized()
 	PhaseText = Cast<UCommonTextBlock>(GetWidgetFromName(TEXT("PhaseText")));
 	AnnouncementText = Cast<UCommonTextBlock>(GetWidgetFromName(TEXT("AnnouncementText")));
 	AnnouncementPlate = Cast<UBorder>(GetWidgetFromName(TEXT("AnnouncementPlate")));
+	DamageFlashBorder = Cast<UBorder>(GetWidgetFromName(TEXT("DamageFlashBorder")));
 
 	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	if (AnnouncementText)
@@ -52,11 +53,15 @@ void UCodexLSHUDWidget::NativeOnInitialized()
 	{
 		AnnouncementPlate->SetVisibility(ESlateVisibility::Collapsed);
 	}
+	if (DamageFlashBorder)
+	{
+		DamageFlashBorder->SetVisibility(ESlateVisibility::Collapsed);
+	}
 	SetDashReady();
 
 	const bool bHasRequiredWidgets = HealthBar && HealthText && WaveText && EnemyCountText &&
 		ScoreText && DashProgressBar && DashText && PhaseText && AnnouncementText &&
-		AnnouncementPlate;
+		AnnouncementPlate && DamageFlashBorder;
 	if (bHasRequiredWidgets)
 	{
 		UE_LOG(LogCodexLastStand, Log,
@@ -169,11 +174,13 @@ void UCodexLSHUDWidget::TryBindGameplayData()
 
 void UCodexLSHUDWidget::UnbindGameplayData()
 {
+	HideDamageFlash();
 	if (UWorld* World = GetWorld())
 	{
 		World->GetTimerManager().ClearTimer(BindingRetryTimerHandle);
 		World->GetTimerManager().ClearTimer(DashUpdateTimerHandle);
 		World->GetTimerManager().ClearTimer(AnnouncementTimerHandle);
+		World->GetTimerManager().ClearTimer(DamageFlashTimerHandle);
 	}
 
 	if (ACodexLSGameState* GameState = BoundGameState.Get())
@@ -243,6 +250,10 @@ void UCodexLSHUDWidget::RefreshHealth()
 void UCodexLSHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
 	RefreshHealth();
+	if (ChangeData.NewValue < ChangeData.OldValue && ChangeData.OldValue > 0.0f)
+	{
+		ShowDamageFlash();
+	}
 	UE_LOG(LogCodexLastStand, Log,
 		TEXT("CODEX_STEP5_HUD_HEALTH Old=%.1f New=%.1f Max=%.1f"),
 		ChangeData.OldValue, ChangeData.NewValue, CachedMaxHealth);
@@ -399,6 +410,27 @@ void UCodexLSHUDWidget::SetDashReady()
 	if (DashProgressBar)
 	{
 		DashProgressBar->SetPercent(1.0f);
+	}
+}
+
+void UCodexLSHUDWidget::ShowDamageFlash()
+{
+	if (!DamageFlashBorder || !GetWorld())
+	{
+		return;
+	}
+
+	DamageFlashBorder->SetVisibility(ESlateVisibility::HitTestInvisible);
+	GetWorld()->GetTimerManager().ClearTimer(DamageFlashTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(
+		DamageFlashTimerHandle, this, &ThisClass::HideDamageFlash, 0.14f, false);
+}
+
+void UCodexLSHUDWidget::HideDamageFlash()
+{
+	if (DamageFlashBorder)
+	{
+		DamageFlashBorder->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 

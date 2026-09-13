@@ -13,7 +13,10 @@ class UCodexLSAbilitySystemComponent;
 class UCodexLSAttributeSet;
 class UGameplayAbility;
 class UGameplayEffect;
+class UMaterialInstanceDynamic;
 class UMaterialInterface;
+class UNiagaraSystem;
+class USoundBase;
 class UStaticMeshComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(
@@ -119,7 +122,11 @@ private:
 	void GrantDefaultAbility();
 	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
 	void EnterDeathState();
-	void ApplyDebugColor();
+	void ApplyVisualColor();
+	void PlayHitFeedback();
+	void RestoreVisualColor();
+	void PlayDeathFeedback();
+	void FinishDeathVisual();
 
 	UPROPERTY(VisibleAnywhere, Category = "Last Stand|GAS")
 	TObjectPtr<UCodexLSAbilitySystemComponent> AbilitySystemComponent;
@@ -136,8 +143,25 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|GAS")
 	TSubclassOf<UGameplayAbility> MeleeAbility;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<UNiagaraSystem> HitSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<UNiagaraSystem> DeathSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> HitSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> DeathSound;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> DynamicVisualMaterial;
+
 	TWeakObjectPtr<AActor> CombatTarget;
 	FDelegateHandle HealthChangedDelegateHandle;
+	FTimerHandle HitFlashTimer;
+	FTimerHandle DeathVisualTimer;
 	bool bAttributesApplied = false;
 	bool bDead = false;
 };

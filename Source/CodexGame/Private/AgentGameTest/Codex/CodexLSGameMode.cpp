@@ -17,6 +17,8 @@
 #include "EngineUtils.h"
 #include "GameplayAbilitySpec.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
+#include "UObject/ConstructorHelpers.h"
 
 namespace
 {
@@ -50,6 +52,19 @@ ACodexLSGameMode::ACodexLSGameMode()
 	WaveDefinitions.Emplace(5, 0, 0.45f);
 	WaveDefinitions.Emplace(7, 3, 0.45f);
 	WaveDefinitions.Emplace(10, 6, 0.45f);
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> WaveStartSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Game/S_Wave_Start_Codex.S_Wave_Start_Codex"));
+	WaveStartSound = WaveStartSoundFinder.Object;
+	static ConstructorHelpers::FObjectFinder<USoundBase> WaveClearSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Game/S_Wave_Clear_Codex.S_Wave_Clear_Codex"));
+	WaveClearSound = WaveClearSoundFinder.Object;
+	static ConstructorHelpers::FObjectFinder<USoundBase> VictorySoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Game/S_Victory_Codex.S_Victory_Codex"));
+	VictorySound = VictorySoundFinder.Object;
+	static ConstructorHelpers::FObjectFinder<USoundBase> GameOverSoundFinder(
+		TEXT("/Game/AgentGameTest/Codex/Audio/Game/S_GameOver_Codex.S_GameOver_Codex"));
+	GameOverSound = GameOverSoundFinder.Object;
 }
 
 void ACodexLSGameMode::InitGame(
@@ -611,11 +626,39 @@ void ACodexLSGameMode::SetGamePhase(ECodexLSGamePhase NewPhase, const FString& R
 	}
 
 	CachedGameState->SetGamePhase(NewPhase);
+	PlayPhaseFeedback(NewPhase);
 	UE_LOG(LogCodexLastStand, Log,
 		TEXT("CODEX_STEP3_PHASE Session=%s From=%s To=%s Reason=%s Wave=%d Alive=%d Remaining=%d Score=%d"),
 		*RuntimeSessionId, *GetPhaseName(OldPhase), *GetPhaseName(NewPhase), *Reason,
 		CachedGameState->GetCurrentWave(), CachedGameState->GetAliveEnemyCount(),
 		CachedGameState->GetRemainingSpawnCount(), CachedGameState->GetScore());
+}
+
+void ACodexLSGameMode::PlayPhaseFeedback(ECodexLSGamePhase NewPhase)
+{
+	USoundBase* Sound = nullptr;
+	switch (NewPhase)
+	{
+	case ECodexLSGamePhase::WaveInProgress:
+		Sound = WaveStartSound;
+		break;
+	case ECodexLSGamePhase::WaveClear:
+		Sound = WaveClearSound;
+		break;
+	case ECodexLSGamePhase::Victory:
+		Sound = VictorySound;
+		break;
+	case ECodexLSGamePhase::GameOver:
+		Sound = GameOverSound;
+		break;
+	default:
+		break;
+	}
+
+	if (Sound)
+	{
+		UGameplayStatics::PlaySound2D(this, Sound, 0.68f, 1.0f);
+	}
 }
 
 void ACodexLSGameMode::ClearGameLoopTimers()

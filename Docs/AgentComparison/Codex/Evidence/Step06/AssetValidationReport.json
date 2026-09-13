@@ -1,0 +1,361 @@
+{
+  "step": 6,
+  "agent": "Codex",
+  "blueprints": [
+    {
+      "asset": "/Game/AgentGameTest/Codex/Abilities/GA_Enemy_MeleeAttack",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Abilities/GA_Enemy_MeleeAttack.GA_Enemy_MeleeAttack_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Abilities/GA_Player_Dash",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Abilities/GA_Player_Dash.GA_Player_Dash_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Abilities/GA_Player_PrimaryAttack",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Abilities/GA_Player_PrimaryAttack.GA_Player_PrimaryAttack_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Effects/GE_Cooldown_Dash",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Effects/GE_Cooldown_Dash.GE_Cooldown_Dash_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Effects/GE_Cooldown_Enemy_MeleeAttack",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Effects/GE_Cooldown_Enemy_MeleeAttack.GE_Cooldown_Enemy_MeleeAttack_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Effects/GE_Cooldown_PrimaryAttack",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Effects/GE_Cooldown_PrimaryAttack.GE_Cooldown_PrimaryAttack_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Effects/GE_Damage",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Effects/GE_Damage.GE_Damage_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Effects/GE_Enemy_DefaultAttributes",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Effects/GE_Enemy_DefaultAttributes.GE_Enemy_DefaultAttributes_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Effects/GE_Player_DefaultAttributes",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Effects/GE_Player_DefaultAttributes.GE_Player_DefaultAttributes_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_Enemy_AIController_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_Enemy_AIController_Codex.BP_Enemy_AIController_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_Enemy_Base_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_Enemy_Base_Codex.BP_Enemy_Base_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_Enemy_Grunt_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_Enemy_Grunt_Codex.BP_Enemy_Grunt_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_Enemy_Runner_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_Enemy_Runner_Codex.BP_Enemy_Runner_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_EnemySpawner_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_EnemySpawner_Codex.BP_EnemySpawner_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_EnemySpawnPoint_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_EnemySpawnPoint_Codex.BP_EnemySpawnPoint_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_GameMode_Arena_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_GameMode_Arena_Codex.BP_GameMode_Arena_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_GameMode_STEP3_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_GameMode_STEP3_Codex.BP_GameMode_STEP3_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_GAS_TestTarget_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_GAS_TestTarget_Codex.BP_GAS_TestTarget_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_Grunt_Arena_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_Grunt_Arena_Codex.BP_Grunt_Arena_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_LastStand_GameMode_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_LastStand_GameMode_Codex.BP_LastStand_GameMode_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_LastStand_Player_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_LastStand_Player_Codex.BP_LastStand_Player_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_Player_Arena_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_Player_Arena_Codex.BP_Player_Arena_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Blueprints/BP_Runner_Arena_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/Blueprints/BP_Runner_Arena_Codex.BP_Runner_Arena_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/UI/Common/W_CommonButton_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/UI/Common/W_CommonButton_Codex.W_CommonButton_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/UI/HUD/W_GameHUD_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/UI/HUD/W_GameHUD_Codex.W_GameHUD_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/UI/Layout/W_PrimaryGameLayout_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/UI/Layout/W_PrimaryGameLayout_Codex.W_PrimaryGameLayout_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/UI/Menu/W_MainMenu_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/UI/Menu/W_MainMenu_Codex.W_MainMenu_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/UI/Menu/W_PauseMenu_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/UI/Menu/W_PauseMenu_Codex.W_PauseMenu_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/UI/Result/W_GameOver_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/UI/Result/W_GameOver_Codex.W_GameOver_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/UI/Result/W_Victory_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/UI/Result/W_Victory_Codex.W_Victory_Codex_C"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/UI/Styles/BP_UI_LastStandButtonStyle_Codex",
+      "status": "<BlueprintStatus.BS_UP_TO_DATE: 3>",
+      "generated_class": "/Game/AgentGameTest/Codex/UI/Styles/BP_UI_LastStandButtonStyle_Codex.BP_UI_LastStandButtonStyle_Codex_C"
+    }
+  ],
+  "audio": [
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Player/S_Player_Attack_Codex",
+      "class": "SoundWave",
+      "duration": 0.18,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_Player_Attack_Codex.wav",
+      "wav_stats": {
+        "frames": 7938,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": 18.8122,
+        "peak_sample": 28241
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Player/S_Player_Dash_Codex",
+      "class": "SoundWave",
+      "duration": 0.36,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_Player_Dash_Codex.wav",
+      "wav_stats": {
+        "frames": 15876,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": -48.7025,
+        "peak_sample": 29490
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Player/S_Player_Damage_Codex",
+      "class": "SoundWave",
+      "duration": 0.3,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_Player_Damage_Codex.wav",
+      "wav_stats": {
+        "frames": 13230,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": 21.061,
+        "peak_sample": 29490
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Enemy/S_Enemy_Hit_Codex",
+      "class": "SoundWave",
+      "duration": 0.16,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_Enemy_Hit_Codex.wav",
+      "wav_stats": {
+        "frames": 7056,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": -15.3533,
+        "peak_sample": 29490
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Enemy/S_Enemy_Death_Codex",
+      "class": "SoundWave",
+      "duration": 0.62,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_Enemy_Death_Codex.wav",
+      "wav_stats": {
+        "frames": 27342,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": 0.8825,
+        "peak_sample": 28800
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Game/S_Wave_Start_Codex",
+      "class": "SoundWave",
+      "duration": 0.58,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_Wave_Start_Codex.wav",
+      "wav_stats": {
+        "frames": 25578,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": 30.9738,
+        "peak_sample": 24849
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Game/S_Wave_Clear_Codex",
+      "class": "SoundWave",
+      "duration": 0.7,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_Wave_Clear_Codex.wav",
+      "wav_stats": {
+        "frames": 30870,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": 25.6002,
+        "peak_sample": 24430
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Game/S_Victory_Codex",
+      "class": "SoundWave",
+      "duration": 1.18,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_Victory_Codex.wav",
+      "wav_stats": {
+        "frames": 52038,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": 14.1903,
+        "peak_sample": 26910
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/Game/S_GameOver_Codex",
+      "class": "SoundWave",
+      "duration": 1.12,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_GameOver_Codex.wav",
+      "wav_stats": {
+        "frames": 49392,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": 41.4687,
+        "peak_sample": 27477
+      }
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Audio/UI/S_UI_Confirm_Codex",
+      "class": "SoundWave",
+      "duration": 0.1,
+      "looping": false,
+      "wav": "..\\..\\..\\..\\..\\Unreal Projects\\CodexGame\\Saved\\AgentGameTest\\Codex\\Step06\\AudioSource\\S_UI_Confirm_Codex.wav",
+      "wav_stats": {
+        "frames": 4410,
+        "sample_rate": 44100,
+        "first_sample": 0,
+        "last_sample": 0,
+        "mean_sample": -15.5533,
+        "peak_sample": 26299
+      }
+    }
+  ],
+  "niagara": [
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Player/NS_Player_Attack_Codex",
+      "class": "NiagaraSystem"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Player/NS_Player_Dash_Codex",
+      "class": "NiagaraSystem"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Enemy/NS_Enemy_Hit_Codex",
+      "class": "NiagaraSystem"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Enemy/NS_Enemy_Death_Codex",
+      "class": "NiagaraSystem"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Environment/NS_World_Impact_Codex",
+      "class": "NiagaraSystem"
+    }
+  ],
+  "levels": [
+    {
+      "asset": "/Game/AgentGameTest/Codex/Levels/L_LastStand_Arena_Codex",
+      "class": "World"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Levels/L_LastStand_EnemyTest_Codex",
+      "class": "World"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Levels/L_LastStand_GameLoopTest_Codex",
+      "class": "World"
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/Levels/L_LastStand_PlayerTest_Codex",
+      "class": "World"
+    }
+  ],
+  "errors": [],
+  "success": true,
+  "counts": {
+    "blueprints": 31,
+    "audio": 10,
+    "niagara": 5,
+    "levels": 4
+  }
+}

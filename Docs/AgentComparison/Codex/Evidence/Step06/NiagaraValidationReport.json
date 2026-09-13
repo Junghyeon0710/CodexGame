@@ -1,0 +1,68 @@
+{
+  "step": 6,
+  "agent": "Codex",
+  "validation_time_local": "2026-09-10 11:18 Asia/Seoul",
+  "method": "Official Unreal MCP NiagaraToolset_System",
+  "systems": [
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Player/NS_Player_Attack_Codex.NS_Player_Attack_Codex",
+      "aggregateStatus": "UpToDate",
+      "bIsCompiling": false,
+      "bIsStale": false,
+      "bHasErrors": false,
+      "bHasWarnings": false,
+      "stackIssueCount": 5,
+      "errorIssueCount": 0,
+      "warningIssueCount": 0
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Player/NS_Player_Dash_Codex.NS_Player_Dash_Codex",
+      "aggregateStatus": "UpToDate",
+      "bIsCompiling": false,
+      "bIsStale": false,
+      "bHasErrors": false,
+      "bHasWarnings": false,
+      "stackIssueCount": 5,
+      "errorIssueCount": 0,
+      "warningIssueCount": 0
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Enemy/NS_Enemy_Hit_Codex.NS_Enemy_Hit_Codex",
+      "aggregateStatus": "UpToDate",
+      "bIsCompiling": false,
+      "bIsStale": false,
+      "bHasErrors": false,
+      "bHasWarnings": false,
+      "stackIssueCount": 3,
+      "errorIssueCount": 0,
+      "warningIssueCount": 0
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Enemy/NS_Enemy_Death_Codex.NS_Enemy_Death_Codex",
+      "aggregateStatus": "UpToDate",
+      "bIsCompiling": false,
+      "bIsStale": false,
+      "bHasErrors": false,
+      "bHasWarnings": false,
+      "stackIssueCount": 4,
+      "errorIssueCount": 0,
+      "warningIssueCount": 0
+    },
+    {
+      "asset": "/Game/AgentGameTest/Codex/VFX/Environment/NS_World_Impact_Codex.NS_World_Impact_Codex",
+      "aggregateStatus": "UpToDate",
+      "bIsCompiling": false,
+      "bIsStale": false,
+      "bHasErrors": false,
+      "bHasWarnings": false,
+      "stackIssueCount": 3,
+      "errorIssueCount": 0,
+      "warningIssueCount": 0
+    }
+  ],
+  "success": true,
+  "notes": [
+    "Informational stack issues are retained template/version guidance only.",
+    "All five systems were opened once to allow asynchronous editor compilation before the final query."
+  ]
+}

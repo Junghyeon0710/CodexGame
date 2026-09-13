@@ -52,6 +52,7 @@ void ACodexLSPlayerController::SetupInputComponent()
 		return;
 	}
 
+#if !UE_BUILD_SHIPPING
 	InputComponent->BindKey(EKeys::F9, IE_Pressed, this, &ThisClass::DebugSoloGrunt);
 	InputComponent->BindKey(EKeys::F10, IE_Pressed, this, &ThisClass::DebugSoloRunner);
 	InputComponent->BindKey(EKeys::F11, IE_Pressed, this, &ThisClass::DebugMultiEnemy);
@@ -62,12 +63,15 @@ void ACodexLSPlayerController::SetupInputComponent()
 	InputComponent->BindKey(EKeys::F8, IE_Pressed, this, &ThisClass::DebugDefeatAllWaveEnemies);
 	InputComponent->BindKey(EKeys::F7, IE_Pressed, this, &ThisClass::DebugForcePlayerDeath);
 	InputComponent->BindKey(EKeys::F6, IE_Pressed, this, &ThisClass::DebugRestartLevel);
+#endif
 	FInputKeyBinding& PauseBinding = InputComponent->BindKey(
 		EKeys::Escape, IE_Pressed, this, &ThisClass::HandlePauseInput);
 	PauseBinding.bExecuteWhenPaused = true;
 
+#if !UE_BUILD_SHIPPING
 	UE_LOG(LogCodexLastStand, Log,
 		TEXT("STEP3 QA Keys Bound | F6=Restart F7=GameOver F8=DefeatWave F9=SoloGrunt F10=SoloRunner F11=Multi F12=Attack Insert=Snapshot Home=BoostHealth End=LitView"));
+#endif
 }
 
 void ACodexLSPlayerController::HandlePauseInput()
@@ -260,8 +264,11 @@ void ACodexLSPlayerController::CodexDebugAttackEnemy(FString NameContains)
 	}
 
 	FVector2D ScreenPosition;
+	// Mouse aim is reconstructed on the player's horizontal aim plane. Projecting
+	// an elevated point shifts that intersection away from small targets such as
+	// Runner, so the QA cursor must use the actor location on the same plane.
 	if (!ProjectWorldLocationToScreen(
-		BestEnemy->GetActorLocation() + FVector(0.0f, 0.0f, 40.0f),
+		BestEnemy->GetActorLocation(),
 		ScreenPosition,
 		true))
 	{

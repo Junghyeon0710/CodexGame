@@ -55,15 +55,19 @@ void UCodexLSGA_PrimaryAttack::ActivateAbility(
 		AimDirection.X, AimDirection.Y, AimDirection.Z);
 
 	FHitResult HitResult;
-	if (Character->TracePrimaryAttack(AttackRange, HitResult))
+	const bool bHit = Character->TracePrimaryAttack(AttackRange, HitResult);
+	bool bHitGameplayTarget = false;
+	if (bHit)
 	{
 		AActor* HitActor = HitResult.GetActor();
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor);
 
 		if (TargetASC)
 		{
+			bHitGameplayTarget = true;
 			FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 			EffectContext.AddSourceObject(Character);
+			EffectContext.AddHitResult(HitResult, true);
 
 			FGameplayEffectSpecHandle DamageSpec =
 				SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContext);
@@ -88,6 +92,8 @@ void UCodexLSGA_PrimaryAttack::ActivateAbility(
 		UE_LOG(LogCodexLastStand, Log, TEXT("PrimaryAttack Miss"));
 	}
 
+	Character->PlayPrimaryAttackFeedback(HitResult, bHit, bHitGameplayTarget);
+
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }
 
@@ -109,6 +115,7 @@ void UCodexLSGA_Dash::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	bDashFeedbackActive = false;
 	if (!ActorInfo || !CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
@@ -125,6 +132,9 @@ void UCodexLSGA_Dash::ActivateAbility(
 	}
 
 	const FVector DashDirection = Character->PerformDash(DashSpeed);
+	LastDashDirection = DashDirection;
+	bDashFeedbackActive = true;
+	Character->PlayDashFeedback(DashDirection, false);
 	UE_LOG(LogCodexLastStand, Log,
 		TEXT("Dash Activated | Direction=(%.2f, %.2f, %.2f) | StateTag=%s | Cooldown Started=3.0"),
 		DashDirection.X, DashDirection.Y, DashDirection.Z,
@@ -157,9 +167,14 @@ void UCodexLSGA_Dash::EndAbility(
 		if (ACodexLSPlayerCharacter* Character =
 			Cast<ACodexLSPlayerCharacter>(ActorInfo->AvatarActor.Get()))
 		{
+			if (bDashFeedbackActive)
+			{
+				Character->PlayDashFeedback(LastDashDirection, true);
+			}
 			Character->StopDashMovement();
 		}
 	}
+	bDashFeedbackActive = false;
 
 	TWeakObjectPtr<UAbilitySystemComponent> ASC =
 		ActorInfo ? ActorInfo->AbilitySystemComponent.Get() : nullptr;

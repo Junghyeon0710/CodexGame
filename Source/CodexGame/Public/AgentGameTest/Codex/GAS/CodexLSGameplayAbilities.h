@@ -78,6 +78,8 @@ private:
 	void FinishDash();
 
 	FTimerHandle DashEndTimer;
+	FVector LastDashDirection = FVector::ForwardVector;
+	bool bDashFeedbackActive = false;
 };
 
 UCLASS()

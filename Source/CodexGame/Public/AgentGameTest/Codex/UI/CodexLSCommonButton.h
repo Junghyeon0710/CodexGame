@@ -6,6 +6,7 @@
 #include "CodexLSCommonButton.generated.h"
 
 class UCommonTextBlock;
+class USoundBase;
 
 /** Shared tactical menu button with real CommonUI focus and click handling. */
 UCLASS(Abstract, Blueprintable)
@@ -21,6 +22,7 @@ public:
 
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeOnClicked() override;
 	virtual void NativeOnHovered() override;
 	virtual void NativeOnUnhovered() override;
 	virtual void NativeOnPressed() override;
@@ -38,4 +40,7 @@ private:
 
 	UPROPERTY(Transient, meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> ButtonLabel;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Last Stand|Feedback")
+	TObjectPtr<USoundBase> ConfirmSound;
 };
