@@ -6,9 +6,11 @@ Unreal Engine 5와 Gameplay Ability System(GAS)으로 제작한 작은 Top-Down 
 
 ## Gameplay Highlight
 
-[![PROJECT LAST STAND gameplay highlight](Docs/AgentComparison/Codex/Evidence/Step06/08_Wave3_16Enemies_Full.png)](Docs/Media/Codex/LastStand_Gameplay_Highlight.mp4)
+![PROJECT LAST STAND gameplay highlight (자동 재생 GIF)](Docs/Media/Codex/LastStand_Gameplay_Highlight.gif)
 
-▶ [50초 Gameplay Highlight MP4 보기](Docs/Media/Codex/LastStand_Gameplay_Highlight.mp4) — 1280×720, 30fps, H.264/AAC
+▶ [50초 Gameplay Highlight MP4 다운로드/원본 보기](Docs/Media/Codex/LastStand_Gameplay_Highlight.mp4) — 1280×720, 30fps, H.264/AAC
+
+GIF 미리보기는 GitHub README에서 자동 재생되도록 480×270, 6fps, 약 4.8MiB로 최적화했습니다. (무음 미리보기이며, 원본 MP4에 Audio가 포함되어 있습니다.)
 
 Main Menu부터 실제 이동, Dash, Primary Attack, Runner 처치, Pause, Wave 3의 16 Enemy와 Victory 3,550까지 한 Runtime Session에서 촬영했습니다. 짧은 하이라이트 길이에 맞추기 위해 Player Health를 `1,000`으로 높이고 각 Wave의 남은 Enemy는 기존 GAS Damage QA helper로 처치한 `QA-assisted` 영상입니다. Audio는 화면 캡처 장치가 system loopback을 제공하지 않아 프로젝트가 실제 사용하는 STEP 6 SoundWave 원본을 해당 Gameplay Event 시점에 동기화했습니다.
 
